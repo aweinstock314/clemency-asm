@@ -1,5 +1,6 @@
 #!/usr/bin/env python2
 from ins_class import *
+import itertools
 
 formats = [
     ((Reg, Mem), ['LDS', 'LDT', 'LDW', 'STS', 'STT', 'STW']),
@@ -48,7 +49,36 @@ def generate():
 
     return forward, backward
 
+def all_possible_for_class(cls):
+    if cls == Reg:
+        #return [Reg(x) for x in reg_list]
+        return [Reg(x) for x in 'r00', 'fl', 'pc']
+    elif cls == Mem:
+        ret = []
+        for reg in all_possible_for_class(Reg):
+            for off in all_possible_for_class(Imm):
+                for regcount in all_possible_for_class(Imm):
+                    ret.append(Mem(reg.name, off, regcount))
+        return ret
+    elif cls == Imm:
+        return [0, 1, 5, 3**5] # TODO: more representative extrema?
+    elif cls == MemoryFlags:
+        return [MemoryFlags(i) for i in range(4)]
+    elif cls == Condition:
+        ret = list(range(16))
+        ret.remove(0b1110)
+        return [Condition(i) for i in ret]
+    elif cls == Ins:
+        forward, backward = generate()
+        ret = []
+        for instr, template in forward.items():
+            for ops in itertools.product(*[all_possible_for_class(x) for x in template]):
+                uf = False # TODO: both?
+                ret.append(Ins(instr, uf, ops))
+        return ret
+
 if __name__ == '__main__':
     forward, backward = generate()
-    print(forward)
-    print(backward)
+    # use this with something like 'python2 corpus.py > tmp.clemency'
+    for instr in all_possible_for_class(Ins):
+        print(str(instr))
