@@ -5,6 +5,17 @@ BITS_PER_BYTE = 9
 
 class WeirdBytes(object):
     def __init__(self, buf, n=None):
+        # If already a list of ints, done
+        if isinstance(buf, list):
+            if n is not None:
+                self.buf = buf[:n]
+                return
+
+            self.buf = buf
+            return
+
+        # If we get a byte string we need to slice to the proper number of 9
+        # bit bytes
         if n is None:
             n = len(buf) * 8 / 9
 
@@ -22,6 +33,8 @@ class WeirdBytes(object):
         return str(self.buf)
 
     def __getitem__(self, key):
+        if isinstance(key, slice):
+            return self.__class__(self.buf[key])
         return self.buf[key]
 
     @staticmethod
@@ -64,10 +77,12 @@ if __name__ == "__main__":
     buf = b"123456789" # 9 bytes = 72 bits = 9 weird bytes
     b = WeirdBytes(buf)
 
-    print b
-    print b.read(3, 2)
+    print "weird bytes", b
+    print "read(3,2)", b.read(3, 2)
     b.write(3, [5, 6, 7])
-    print b
-    print WeirdBytes.swapbytes(b[:2])
-    print WeirdBytes.swapbytes(b[:3])
-    print WeirdBytes.swapbytes(WeirdBytes.swapbytes(b[:3]))
+    print "after write 3 bytes", b
+    print "second element", b[1]
+    print "slice", b[1:]
+    print "swap 2 bytes", WeirdBytes.swapbytes(b[:2])
+    print "swap 3 bytes", WeirdBytes.swapbytes(b[:3])
+    print "You can swap back and forth", WeirdBytes.swapbytes(WeirdBytes.swapbytes(b[:3]))
