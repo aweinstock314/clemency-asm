@@ -1,14 +1,24 @@
 import sys
 
-bits = []
-for char in sys.stdin.read():
-    bits.append('0{:08b}'.format(ord(char)))
+def to9bit(buf=None):
 
-bits = "".join(bits)
+    bits = []
+    if buf == None:
+        for char in sys.stdin.read():
+            bits.append('0{:08b}'.format(ord(char)))
+    else:
+        for char in buf:
+            bits.append('0{:08b}'.format(ord(char)))
 
-bytes = []
-for i in range(len(bits)/8):
-    byte = bits[i*8:(i+1)*8]
-    bytes.append(chr(int(byte, 2)))
+    bits = "".join(bits)
 
-sys.stdout.write("".join(bytes))
+    bytes = []
+    for i in range(len(bits)/8):
+        byte = bits[i*8:(i+1)*8]
+        bytes.append(chr(int(byte, 2)))
+
+    return "".join(bytes)
+
+if __name__ == "__main__":
+    
+   sys.stdout.write(to9bit())
