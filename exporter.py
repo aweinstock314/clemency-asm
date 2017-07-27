@@ -92,24 +92,21 @@ def ra_rb_lo_op(opcode,ra,rb,instruction_specific,uf):
     ret = ret | (uf << 0)
     return (ret,3)
 
-def ra_rb_me(opcode,opcode2,ra,rb,one,memoryflags):
-
+def ra_rb_me(opcode,opcode2,ra,rb,memoryflags):
     ret = 0
     if len(bin(opcode)[2:]) > 7:
         return None
-    ret = ret | (opcode << 21)
+    ret = ret | (opcode << 20)
     if len(bin(ra)[2:]) > 5:
         return None
-    ret = ret | (ra << 16)
+    ret = ret | (ra << 15)
     if len(bin(rb)[2:]) > 5:
         return None
-    ret = ret | (rb << 11)
-    if len(bin(one)[2:]) > 1:
-        return None
-    ret = ret | (one << 10)
+    ret = ret | (rb << 10)
+    ret = ret | (1 << 9)
     if len(bin(memoryflags)[2:]) > 2:
         return None
-    ret = ret | (memoryflags << 8)
+    ret = ret | (memoryflags << 7)
     if len(bin(opcode2)[2:]) > 8:
         return None
     ret = ret | (opcode2 << 0)
@@ -302,7 +299,23 @@ def no_re(opcode):
 
 
 
-fun_to_op = {'ra_rb_me': ['SMP'], 'ra_rb_rc': ['AD', 'ADC', 'ADCM', 'ADF', 'ADFM', 'ADM', 'AN', 'ANM', 'DMT', 'DV', 'DVF', 'DVFM', 'DVM', 'DVS', 'DVSM', 'MD', 'MDF', 'MDFM', 'MDM', 'MDS', 'MDSM', 'MU', 'MUF', 'MUFM', 'MUM', 'MUS', 'MUSM', 'OR', 'ORM', 'RL', 'RLM', 'RR', 'RRM', 'SA', 'SAM', 'SB', 'SBC', 'SBCM', 'SBF', 'SBFM', 'SBM', 'SL', 'SLM', 'SR', 'SRM', 'XR', 'XRM'], 'no_re': ['DBRK', 'HT', 'IR', 'RE', 'WT'], 'co_ra': ['BR', 'CR'], 'ra_rb_lo_ve_no_fl': ['FTI', 'FTIM', 'ITF', 'ITFM'], 'ra_rb_of_re': ['LDS', 'LDT', 'LDW', 'STS', 'STT', 'STW'], 'of': ['CAR'], 'ra_rb_lo_ve_no_fl_al': ['RMP', 'SES', 'SEW', 'ZES', 'ZEW'], 'ra_im_al': ['MH', 'ML', 'MS'], 'ra_rb_sh_ve': ['CM', 'CMF', 'CMFM', 'CMM'], 'ra_no_fl': ['DI', 'EI', 'RF', 'SF'], 'lo': ['BRA', 'BRR', 'CAA'], 'co': ['B', 'C'], 'ra_rb_lo_op': ['BF', 'BFM', 'NG', 'NGF', 'NGFM', 'NGM', 'NT', 'NTM'], 'ra_wi_fl': ['RND', 'RNDM'], 'ra_im': ['CMI', 'CMIM'], 'ra_rb_im': ['ADCI', 'ADCIM', 'ADI', 'ADIM', 'ANI', 'DVI', 'DVIM', 'DVIS', 'DVISM', 'MDI', 'MDIM', 'MDIS', 'MDISM', 'MUI', 'MUIM', 'MUIS', 'MUISM', 'ORI', 'RLI', 'RLIM', 'RRI', 'RRIM', 'SAI', 'SAIM', 'SBCI', 'SBCIM', 'SBI. SBIM', 'SLI', 'SLIM', 'SRI', 'SRIM', 'XRI']}
+fun_to_op = {'ra_rb_me': ['SMP'], 
+'ra_rb_rc': ['AD', 'ADC', 'ADCM', 'ADF', 'ADFM', 'ADM', 'AN', 'ANM', 'DMT', 'DV', 'DVF', 'DVFM', 'DVM', 'DVS', 'DVSM', 'MD', 'MDF', 'MDFM', 'MDM', 'MDS', 'MDSM', 'MU', 'MUF', 'MUFM', 'MUM', 'MUS', 'MUSM', 'OR', 'ORM', 'RL', 'RLM', 'RR', 'RRM', 'SA', 'SAM', 'SB', 'SBC', 'SBCM', 'SBF', 'SBFM', 'SBM', 'SL', 'SLM', 'SR', 'SRM', 'XR', 'XRM'], 
+'no_re': ['DBRK', 'HT', 'IR', 'RE', 'WT'], 
+'co_ra': ['BR', 'CR'], 
+'ra_rb_lo_ve_no_fl': ['FTI', 'FTIM', 'ITF', 'ITFM'], 
+'ra_rb_of_re': ['LDS', 'LDT', 'LDW', 'STS', 'STT', 'STW'], 
+'of': ['CAR'], 
+'ra_rb_lo_ve_no_fl_al': ['RMP', 'SES', 'SEW', 'ZES', 'ZEW'], 
+'ra_im_al': ['MH', 'ML', 'MS'], 
+'ra_rb_sh_ve': ['CM', 'CMF', 'CMFM', 'CMM'], 
+'ra_no_fl': ['DI', 'EI', 'RF', 'SF'], 
+'lo': ['BRA', 'BRR', 'CAA'], 
+'co': ['B', 'C'], 
+'ra_rb_lo_op': ['BF', 'BFM', 'NG', 'NGF', 'NGFM', 'NGM', 'NT', 'NTM'], 
+'ra_wi_fl': ['RND', 'RNDM'], 
+'ra_im': ['CMI', 'CMIM'], 
+'ra_rb_im': ['ADCI', 'ADCIM', 'ADI', 'ADIM', 'ANI', 'DVI', 'DVIM', 'DVIS', 'DVISM', 'MDI', 'MDIM', 'MDIS', 'MDISM', 'MUI', 'MUIM', 'MUIS', 'MUISM', 'ORI', 'RLI', 'RLIM', 'RRI', 'RRIM', 'SAI', 'SAIM', 'SBCI', 'SBCIM', 'SBI. SBIM', 'SLI', 'SLIM', 'SRI', 'SRIM', 'XRI']}
 
 op_to_fun = {'BF': 'ra_rb_lo_op', 'MUSM': 'ra_rb_rc', 'CMF': 'ra_rb_sh_ve', 'MDISM': 'ra_rb_im', 'WT': 'no_re', 'BR': 'co_ra', 'DVI': 'ra_rb_im', 'RMP': 'ra_rb_lo_ve_no_fl_al', 'SAI': 'ra_rb_im', 'RR': 'ra_rb_rc', 'RE': 'no_re', 'RF': 'ra_no_fl', 'RL': 'ra_rb_rc', 'BFM': 'ra_rb_lo_op', 'CMFM': 'ra_rb_sh_ve', 'MDSM': 'ra_rb_rc', 'ADCIM': 'ra_rb_im', 'SBFM': 'ra_rb_rc', 'OR': 'ra_rb_rc', 'DVIS': 'ra_rb_im', 'CMM': 'ra_rb_sh_ve', 'NGM': 'ra_rb_lo_op', 'HT': 'no_re', 'FTIM': 'ra_rb_lo_ve_no_fl', 'DMT': 'ra_rb_rc', 'EI': 'ra_no_fl', 'SBCI': 'ra_rb_im', 'DVIM': 'ra_rb_im', 'SBCM': 'ra_rb_rc', 'ZES': 'ra_rb_lo_ve_no_fl_al', 'LDS': 'ra_rb_of_re', 'LDW': 'ra_rb_of_re', 'LDT': 'ra_rb_of_re', 'NTM': 'ra_rb_lo_op', 'XRM': 'ra_rb_rc', 'C': 'co', 'IR': 'no_re', 'XRI': 'ra_rb_im', 'CMIM': 'ra_im', 'ORI': 'ra_rb_im', 'MUISM': 'ra_rb_im', 'SBI. SBIM': 'ra_rb_im', 'MUFM': 'ra_rb_rc', 'FTI': 'ra_rb_lo_ve_no_fl', 'AN': 'ra_rb_rc', 'DVSM': 'ra_rb_rc', 'MD': 'ra_rb_rc', 'SAM': 'ra_rb_rc', 'RRIM': 'ra_rb_im', 'ANM': 'ra_rb_rc', 'SAIM': 'ra_rb_im', 'DBRK': 'no_re', 'ANI': 'ra_rb_im', 'RND': 'ra_wi_fl', 'MU': 'ra_rb_rc', 'MS': 'ra_im_al', 'SBCIM': 'ra_rb_im', 'DVM': 'ra_rb_rc', 'MDFM': 'ra_rb_rc', 'MUS': 'ra_rb_rc', 'DVF': 'ra_rb_rc', 'NGF': 'ra_rb_lo_op', 'SMP': 'ra_rb_me', 'MUF': 'ra_rb_rc', 'MUM': 'ra_rb_rc', 'MUI': 'ra_rb_im', 'DVS': 'ra_rb_rc', 'SEW': 'ra_rb_lo_ve_no_fl_al', 'RRM': 'ra_rb_rc', 'MDI': 'ra_rb_im', 'SES': 'ra_rb_lo_ve_no_fl_al', 'CMI': 'ra_im', 'RRI': 'ra_rb_im', 'MDM': 'ra_rb_rc', 'MDIM': 'ra_rb_im', 'MDF': 'ra_rb_rc', 'NG': 'ra_rb_lo_op', 'MDIS': 'ra_rb_im', 'MDS': 'ra_rb_rc', 'NT': 'ra_rb_lo_op', 'B': 'co', 'CM': 'ra_rb_sh_ve', 'ITFM': 'ra_rb_lo_ve_no_fl', 'MUIS': 'ra_rb_im', 'SLIM': 'ra_rb_im', 'SRM': 'ra_rb_rc', 'ADF': 'ra_rb_rc', 'DVFM': 'ra_rb_rc', 'MUIM': 'ra_rb_im', 'ADC': 'ra_rb_rc', 'XR': 'ra_rb_rc', 'CR': 'co_ra', 'DVISM': 'ra_rb_im', 'ADM': 'ra_rb_rc', 'ADIM': 'ra_rb_im', 'ADI': 'ra_rb_im', 'RLM': 'ra_rb_rc', 'RLI': 'ra_rb_im', 'ITF': 'ra_rb_lo_ve_no_fl', 'SR': 'ra_rb_rc', 'BRR': 'lo', 'SBC': 'ra_rb_rc', 'ORM': 'ra_rb_rc', 'SBF': 'ra_rb_rc', 'ZEW': 'ra_rb_lo_ve_no_fl_al', 'SL': 'ra_rb_rc', 'SB': 'ra_rb_rc', 'SA': 'ra_rb_rc', 'SF': 'ra_no_fl', 'BRA': 'lo', 'SBM': 'ra_rb_rc', 'DI': 'ra_no_fl', 'CAR': 'of', 'NGFM': 'ra_rb_lo_op', 'RNDM': 'ra_wi_fl', 'MH': 'ra_im_al', 'SRIM': 'ra_rb_im', 'DV': 'ra_rb_rc', 'CAA': 'lo', 'ML': 'ra_im_al', 'ADFM': 'ra_rb_rc', 'RLIM': 'ra_rb_im', 'SRI': 'ra_rb_im', 'AD': 'ra_rb_rc', 'ADCM': 'ra_rb_rc', 'ADCI': 'ra_rb_im', 'STT': 'ra_rb_of_re', 'SLM': 'ra_rb_rc', 'STW': 'ra_rb_of_re', 'SLI': 'ra_rb_im', 'STS': 'ra_rb_of_re'}
 
@@ -442,7 +455,11 @@ ops = {'AD':[0b000000,0b0000],
 
 def export(opcode,args):
     f = op_to_fun[opcode]
-    return eval(f+"("+','.join([str(i) for i in ops["AD"]])+","+",".join(args) + ")")
+    return eval(f+"("+','.join([str(i) for i in ops[opcode]])+","+",".join(args) + ")")
 
-print export("AD",["1","2","3","1"])
+a,b = export("AD",["1","2","3","1"])
+print bin(a),b
+
+a,b = export("SMP",["1","1","1"])
+print bin(a),b
 
