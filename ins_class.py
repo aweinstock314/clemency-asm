@@ -1,15 +1,14 @@
-
-reg_list = ["r%02i"%(i) for i in range(29)] + ["st","ra","pc","fl"]
+reg_list = ["r%02i"%(i) for i in range(28)] + ["st","ra","pc","fl"]
 
 class Reg:
     def __init__(self,name):
         self.name = name.lower()
-        if self.name.startswith('r'):
+        if self.name.startswith('r') and self.name != 'ra':
             self.num = int(self.name[1:], 10)
         else:
             self.num = reg_list.index(self.name)
         if self.num < 0 or self.num > 31:
-            raise Exception("Invalid register number %d" % (num,))
+            raise Exception("Invalid register number %d (name: %r)" % (self.num, name))
     def __repr__(self):
         return 'Reg(%r, %r)' % (self.name, self.num)
     def __str__(self):
