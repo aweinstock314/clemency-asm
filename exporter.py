@@ -1,6 +1,6 @@
 import pdb
 
-def ra_rb_of_re(opcode,opcode2,ra,rb,regcount,adjust,mem):
+def ra_rb_of_re(opcode,opcode2,ra,rb,regcount,adjust,mem,uf):
 
     ret = 0
     if len(bin(opcode)[2:]) > 7:
@@ -92,7 +92,7 @@ def ra_rb_lo_op(opcode,ra,rb,instruction_specific,uf):
     ret = ret | (uf << 0)
     return (ret,3)
 
-def ra_rb_me(opcode,opcode2,ra,rb,memoryflags):
+def ra_rb_me(opcode,opcode2,ra,rb,memoryflags,uf):
     ret = 0
     if len(bin(opcode)[2:]) > 7:
         return None
@@ -112,7 +112,7 @@ def ra_rb_me(opcode,opcode2,ra,rb,memoryflags):
     ret = ret | (opcode2 << 0)
     return (ret,4)
 
-def ra_rb_lo_ve_no_fl(opcode,opcode2,ra,rb):
+def ra_rb_lo_ve_no_fl(opcode,opcode2,ra,rb,uf):
 
     ret = 0
     if len(bin(opcode)[2:]) > 9:
@@ -129,7 +129,7 @@ def ra_rb_lo_ve_no_fl(opcode,opcode2,ra,rb):
     ret = ret | (opcode2 << 0)
     return (ret,3)
 
-def ra_rb_lo_ve_no_fl_al(opcode,opcode2,ra,rb):
+def ra_rb_lo_ve_no_fl_al(opcode,opcode2,ra,rb,uf):
 
     ret = 0
     if len(bin(opcode)[2:]) > 7:
@@ -146,7 +146,7 @@ def ra_rb_lo_ve_no_fl_al(opcode,opcode2,ra,rb):
     ret = ret | (opcode2 << 0)
     return (ret,3)
 
-def ra_rb_lo_ve_no_fl_al(opcode,opcode2,ra,rb):
+def ra_rb_lo_ve_no_fl_al(opcode,opcode2,ra,rb,uf):
 
     ret = 0
     if len(bin(opcode)[2:]) > 12:
@@ -163,7 +163,7 @@ def ra_rb_lo_ve_no_fl_al(opcode,opcode2,ra,rb):
     ret = ret | (opcode2 << 0)
     return (ret,3)
 
-def ra_rb_sh_ve(opcode,ra,rb):
+def ra_rb_sh_ve(opcode,ra,rb,uf):
 
     ret = 0
     if len(bin(opcode)[2:]) > 8:
@@ -177,7 +177,7 @@ def ra_rb_sh_ve(opcode,ra,rb):
     ret = ret | (rb << 0)
     return (ret,2)
 
-def ra_im(opcode,ra,imm):
+def ra_im(opcode,ra,imm,uf):
 
     ret = 0
     if len(bin(opcode)[2:]) > 8:
@@ -191,7 +191,7 @@ def ra_im(opcode,ra,imm):
     ret = ret | (imm << 0)
     return (ret,3)
 
-def ra_im_al(opcode,ra,imm):
+def ra_im_al(opcode,ra,imm,uf):
 
     ret = 0
     if len(bin(opcode)[2:]) > 5:
@@ -205,7 +205,7 @@ def ra_im_al(opcode,ra,imm):
     ret = ret | (imm << 0)
     return (ret,3)
 
-def co_ra(opcode,opcode2,condition,ra):
+def co_ra(opcode,opcode2,condition,ra,uf):
 
     ret = 0
     if len(bin(opcode)[2:]) > 6:
@@ -222,7 +222,7 @@ def co_ra(opcode,opcode2,condition,ra):
     ret = ret | (opcode2 << 0)
     return (ret,2)
 
-def ra_no_fl(opcode,opcode2,ra):
+def ra_no_fl(opcode,opcode2,ra,uf):
 
     ret = 0
     if len(bin(opcode)[2:]) > 12:
@@ -253,7 +253,7 @@ def ra_wi_fl(opcode,ra,q,uf):
     ret = ret | (uf << 0)
     return (ret,3)
 
-def co(opcode,condition,offset):
+def co(opcode,condition,offset,uf):
 
     ret = 0
     if len(bin(opcode)[2:]) > 6:
@@ -267,7 +267,7 @@ def co(opcode,condition,offset):
     ret = ret | (offset << 0)
     return (ret,3)
 
-def lo(opcode,location):
+def lo(opcode,location,uf):
 
     ret = 0
     if len(bin(opcode)[2:]) > 9:
@@ -278,7 +278,7 @@ def lo(opcode,location):
     ret = ret | (location << 0)
     return (ret,4)
 
-def of(opcode,offset):
+def of(opcode,offset,uf):
 
     ret = 0
     if len(bin(opcode)[2:]) > 9:
@@ -289,7 +289,7 @@ def of(opcode,offset):
     ret = ret | (offset << 0)
     return (ret,4)
 
-def no_re(opcode):
+def no_re(opcode,uf):
 
     ret = 0
     if len(bin(opcode)[2:]) > 18:
@@ -452,14 +452,22 @@ ops = {'AD':[0b000000,0b0000],
         'ZES':[0b101000001001, 0b00000], 
         'ZEW':[0b101000001010,0b00000],}
 
+#@TODO no_re
 
 def export(opcode,args):
+    #print opcode
     f = op_to_fun[opcode]
-    return eval(f+"("+','.join([str(i) for i in ops[opcode]])+","+",".join(args) + ")")
-
-a,b = export("AD",["1","2","3","1"])
-print bin(a),b
-
-a,b = export("SMP",["1","1","1"])
-print bin(a),b
-
+    #print f
+    ret = eval(f+"("+','.join([str(i) for i in ops[opcode]])+","+",".join(args) + ")")
+    a,b = ret    
+    #print bin(a)[2:].zfill(9*b),b*9
+    #print
+    return ret
+"""
+export("AD",["1","1","1","1"])
+export("SMP",["1","1","1","1"])
+export("FTI",["1","1","1"])
+export("LDS",["1","1","1","1","1","1"])
+export("CAR",["1","1"])
+export("RMP",["1","1","1"])
+"""
