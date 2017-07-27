@@ -63,7 +63,7 @@ def ra_rb_im(opcode,opcode2,ra,rb,imm,uf):
     ret = ret | (rb << 10)
     if len(bin(imm)[2:]) > 5:
         return None
-    ret = ret | (imm << 5)
+    ret = ret | (imm << 3)
     if len(bin(opcode2)[2:]) > 2:
         return None
     ret = ret | (opcode2 << 1)
@@ -72,7 +72,7 @@ def ra_rb_im(opcode,opcode2,ra,rb,imm,uf):
     ret = ret | (uf << 0)
     return (ret,3)
 
-def ra_rb_lo_op(opcode,ra,rb,instruction_specific,uf):
+def ra_rb_lo_op(opcode,opcode2,ra,rb,uf):
 
     ret = 0
     if len(bin(opcode)[2:]) > 9:
@@ -84,15 +84,16 @@ def ra_rb_lo_op(opcode,ra,rb,instruction_specific,uf):
     if len(bin(rb)[2:]) > 5:
         return None
     ret = ret | (rb << 8)
-    if len(bin(instruction_specific)[2:]) > 7:
+    if len(bin(opcode2)[2:]) > 7:
         return None
-    ret = ret | (instruction_specific << 1)
+    ret = ret | (opcode2 << 1)
     if len(bin(uf)[2:]) > 1:
         return None
     ret = ret | (uf << 0)
     return (ret,3)
 
 def ra_rb_me(opcode,opcode2,ra,rb,memoryflags,uf):
+
     ret = 0
     if len(bin(opcode)[2:]) > 7:
         return None
@@ -151,13 +152,13 @@ def ra_rb_lo_ve_no_fl_al(opcode,opcode2,ra,rb,uf):
     ret = 0
     if len(bin(opcode)[2:]) > 12:
         return None
-    ret = ret | (opcode << 15)
+    ret = ret | (opcode << 20)
     if len(bin(ra)[2:]) > 5:
         return None
-    ret = ret | (ra << 10)
+    ret = ret | (ra << 15)
     if len(bin(rb)[2:]) > 5:
         return None
-    ret = ret | (rb << 5)
+    ret = ret | (rb << 10)
     if len(bin(opcode2)[2:]) > 5:
         return None
     ret = ret | (opcode2 << 0)
@@ -236,7 +237,7 @@ def ra_no_fl(opcode,opcode2,ra,uf):
     ret = ret | (opcode2 << 0)
     return (ret,2)
 
-def ra_wi_fl(opcode,ra,q,uf):
+def ra_wi_fl(opcode,opcode2,ra,uf):
 
     ret = 0
     if len(bin(opcode)[2:]) > 9:
@@ -245,9 +246,9 @@ def ra_wi_fl(opcode,ra,q,uf):
     if len(bin(ra)[2:]) > 5:
         return None
     ret = ret | (ra << 13)
-    if len(bin(q)[2:]) > 12:
+    if len(bin(opcode2)[2:]) > 12:
         return None
-    ret = ret | (q << 1)
+    ret = ret | (opcode2 << 1)
     if len(bin(uf)[2:]) > 1:
         return None
     ret = ret | (uf << 0)
@@ -349,7 +350,7 @@ ops = {'AD':[0b000000,0b0000],
         'CMM':[0b10111100], 
         'CR':[0b110111,0b000], 
         'DBRK':[0b111111111111111111], 
-        'DI':[0b101000000101], 
+        'DI':[0b101000000101,0b0], 
         'DMT':[0b0110100,0b00000], 
         'DV':[0b0001100,0b0000], 
         'DVF':[0b0001101,0b0000], 
@@ -361,7 +362,7 @@ ops = {'AD':[0b000000,0b0000],
         'DVM':[0b0001110,0b0000], 
         'DVS':[0b0001100,0b0010], 
         'DVSM':[0b0001110,0b0010], 
-        'EI':[0b101000000100], 
+        'EI':[0b101000000100,0b0], 
         'FTI':[0b101000101,0b00000000], 
         'FTIM':[0b101000111,0b00000000], 
         'HT':[0b101000000011000000], 
@@ -463,11 +464,21 @@ def export(opcode,args):
     #print bin(a)[2:].zfill(9*b),b*9
     #print
     return ret
-"""
-export("AD",["1","1","1","1"])
-export("SMP",["1","1","1","1"])
-export("FTI",["1","1","1"])
-export("LDS",["1","1","1","1","1","1"])
-export("CAR",["1","1"])
-export("RMP",["1","1","1"])
-"""
+
+
+def test():
+    export("AD",["1","1","1","1"])
+    export("SMP",["1","1","1","1"])
+    export("FTI",["1","1","1"])
+    export("LDS",["1","1","1","1","1","1"])
+    export("CAR",["1","1"])
+    export("RMP",["1","1","1"])
+    export("MH",["1","1","1"])
+    export("CM",["1","1","1"])
+    export("DI",["1","1"])
+    export("BRA",["1","1"])
+    export("B",["1","1","1"])
+    export("BF",["1","1","1"])
+    export("RND",["1","1"])
+    export("CMI",["1","1","1"])
+    export("ADCI",["1","1","1","1"])
