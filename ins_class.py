@@ -14,7 +14,7 @@ class Reg:
     def __repr__(self):
         return 'Reg(%r, %r)' % (self.name, self.num)
     def __str__(self):
-        return self.name
+        return reg_list[self.num]
 
 class Imm:
     def __init__(self, value):
@@ -42,7 +42,7 @@ class Ins:
     def __repr__(self):
         return 'Ins(%r, %r, %r)' % (self.name, self.uf, self.ops)
     def __str__(self):
-        return '%s%s %s' % (self.name, ('.' if self.uf else ''), ','.join(map(str, self.ops)))
+        return '%s%s %s' % (self.name, ('.' if self.uf else ''), ', '.join(map(str, self.ops)))
 
 class Label:
     def __init__(self, name):
