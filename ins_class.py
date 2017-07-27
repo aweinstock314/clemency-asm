@@ -13,6 +13,8 @@ class Reg:
         return 'Reg(%r, %r)' % (self.name, self.num)
     def __str__(self):
         return reg_list[self.num]
+    def untyped_repr(self, _):
+        return [self.num]
 
 class Imm:
     def __init__(self, value):
@@ -21,6 +23,8 @@ class Imm:
         return 'Imm(%r)' % value
     def __str__(self):
         return str(value)
+    def untyped_repr(self, _):
+        return [self.value]
 
 class Mem:
     def __init__(self, reg, offset, regcount):
@@ -31,6 +35,8 @@ class Mem:
         return 'Mem(%r, %r, %r)' % (self.reg, self.offset, self.regcount)
     def __str__(self):
         return '[%s + %#x, %d]' % (self.reg, self.offset, self.regcount)
+    def untyped_repr(self, labels):
+        return [self.reg.untyped_repr(labels), self.offset, self.regcount]
 
 class Ins:
     def __init__(self, name, uf, ops):
@@ -49,6 +55,10 @@ class Label:
         return 'Label(%r)' % self.name
     def __str__(self):
         return '&%s' % (self.name,)
+    def untyped_repr(self, labels):
+        if not labels:
+            return [0]
+        raise Exception("Unimplemented")
 
 class MemoryFlags:
     def __init__(self, value):
@@ -63,6 +73,8 @@ class MemoryFlags:
                 2: 'MemoryFlags(rw-)',
                 3: 'MemoryFlags(r-x)',
                 }[self.value]
+    def untyped_repr(self, _):
+        return [self.value]
 
 cond2mnem = {
     0b0000: 'n',
@@ -95,3 +107,5 @@ class Condition:
         return 'Condition(%d)' % self.value
     def __str__(self):
         return 'Condition(%s)' % cond2mnem[self.value]
+    def untyped_repr(self, _):
+        return [self.value]
