@@ -9,8 +9,7 @@ class Reg:
         else:
             self.num = reg_list.index(self.name)
         if self.num < 0 or self.num > 31:
-            from assembler import ParseException
-            raise ParseException(line, i, "Invalid register number %d" % (num,))
+            raise Exception("Invalid register number %d" % (num,))
     def __repr__(self):
         return 'Reg(%r, %r)' % (self.name, self.num)
     def __str__(self):
@@ -51,3 +50,12 @@ class Label:
         return 'Label(%r)' % self.name
     def __str__(self):
         return '&%s' % (self.name,)
+
+class MemoryFlags:
+    def __init__(self, value):
+        if value < 0 or value > 3:
+            raise Exception("Invalid memory protection %d" % (num,))
+        self.value = value
+
+class Condition:
+    pass
