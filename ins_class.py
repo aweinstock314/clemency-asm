@@ -24,7 +24,9 @@ cond2mnem = {
 
 mnem2cond = {k: v for (v,k) in cond2mnem.items()}
 
-branch_ops = {base+k: (base, v) for (base, (k, v)) in itertools.product(['b', 'c', 'br', 'cr'], mnem2cond.items())}
+raw_branch_ops = ['b', 'c', 'br', 'cr']
+branch_ops = {base+k: (base, v) for (base, (k, v)) in itertools.product(raw_branch_ops, mnem2cond.items())}
+inv_branch_ops = {k: v for (v,k) in branch_ops.items()}
 
 class Reg:
     def __init__(self,name):
@@ -69,11 +71,11 @@ class Ins:
         self.name = name.lower()
         self.uf = uf
         self.ops = ops
+        self.cond = None
         if self.name in branch_ops:
-            self.name, cond = branch_ops[self.name]
-            self.ops = [Condition(cond)] + self.ops
+            _, self.cond = branch_ops[self.name]
     def __repr__(self):
-        return 'Ins(%r, %r, %r)' % (self.name, self.uf, self.ops)
+        return 'Ins(%r, %r, %r, %r)' % (self.name, self.uf, self.ops, self.cond)
     def __str__(self):
         return '%s%s %s' % (self.name, ('.' if self.uf else ''), ', '.join(map(str, self.ops)))
 
@@ -84,24 +86,39 @@ class Label:
         return 'Label(%r)' % self.name
     def __str__(self):
         return '&%s' % (self.name,)
-    def untyped_repr(self, labels):
-        if not labels:
+    def untyped_repr(self, data):
+        if not data:
             return [0]
-        raise Exception("Unimplemented")
+        labels, sizes = data
+        print('labels: %r' % labels)
+        print('sizes: %r' % sizes)
+        cumulative_sizes = []
+        total = 0
+        for size in sizes:
+            total += size
+            cumulative_sizes.append(total)
+        print('cumulative_sizes: %r' % cumulative_sizes)
+        # TODO: sanity check correctness for absolute/relative
+        # note: it's probably user error to use jump absolute with a label (since labels are pc-relative)
+        return [cumulative_sizes[labels[self.name]-1]]
 
 class MemoryFlags:
     def __init__(self, value):
         if value < 0 or value > 3:
             raise Exception("Invalid memory protection %d" % (num,))
         self.value = value
+    '''
     def __repr__(self):
         return 'MemoryFlags(%d)' % self.value
-    def __str__(self):
+    '''
+    def __repr__(self):
         return {0: 'MemoryFlags(---)',
                 1: 'MemoryFlags(r--)',
                 2: 'MemoryFlags(rw-)',
                 3: 'MemoryFlags(r-x)',
                 }[self.value]
+    def __str__(self):
+        return str(self.value)
     def untyped_repr(self, _):
         return [self.value]
 

@@ -72,13 +72,22 @@ def all_possible_for_class(cls):
         forward, backward = generate()
         ret = []
         for instr, template in forward.items():
+            instr = instr.lower()
             for ops in itertools.product(*[all_possible_for_class(x) for x in template]):
                 uf = False # TODO: both?
-                ret.append(Ins(instr, uf, ops))
+                if instr in raw_branch_ops:
+                    #print('; %r %r' % (instr, ops))
+                    name = inv_branch_ops[instr, ops[0].value]
+                    ops = ops[1:]
+                else:
+                    name = instr
+                    #print('; %r %r' % (instr, ops))
+                ret.append(Ins(name, uf, list(ops)))
         return ret
 
 if __name__ == '__main__':
     forward, backward = generate()
     # use this with something like 'python2 corpus.py > tmp.clemency'
     for instr in all_possible_for_class(Ins):
+        #print('#' + repr(instr))
         print(str(instr))
