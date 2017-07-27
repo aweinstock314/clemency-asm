@@ -22,9 +22,8 @@ formats = [
 
     ((Condition, Reg), ['BR', 'CR']),
 
-    # TODO: {no,with} flag
-    ((Reg,), ['DI', 'EI', 'RF', 'SF']),
-    ((Reg,), ['RND', 'RNDM']),
+    ((Reg,), ['DI', 'EI', 'RF', 'SF']), # these instructions can't set the UF (and their representations don't have a bit for it)
+    ((Reg,), ['RND', 'RNDM']), # these instructions can
 
     ((Condition, Imm), ['B', 'C']),
 

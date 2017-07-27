@@ -56,6 +56,43 @@ class MemoryFlags:
         if value < 0 or value > 3:
             raise Exception("Invalid memory protection %d" % (num,))
         self.value = value
+    def __repr__(self):
+        return 'MemoryFlags(%d)' % self.value
+    def __str__(self):
+        return {0: 'MemoryFlags(---)',
+                1: 'MemoryFlags(r--)',
+                2: 'MemoryFlags(rw-)',
+                3: 'MemoryFlags(r-x)',
+                }[self.value]
+
+cond2mnem = {
+    0b0000: 'n',
+    0b0001: 'e',
+    0b0010: 'l',
+    0b0011: 'le',
+    0b0100: 'g',
+    0b0101: 'ge',
+    0b0110: 'no',
+    0b0111: 'o',
+
+    0b1000: 'ns',
+    0b1001: 's',
+    0b1010: 'sl',
+    0b1011: 'sle',
+    0b1100: 'sg',
+    0b1101: 'sge',
+    0b1110: 'UNDEFINED', # TODO: quintuple-check that these are numbered consistently between here/page19 of the manual/the emulator
+    0b1111: '',
+    }
+
+mnem2cond = {k: v for (v,k) in cond2mnem.items()}
 
 class Condition:
-    pass
+    def __init__(self, value):
+        if value < 0 or value > 15:
+            raise Exception("Invalid memory protection %d" % (num,))
+        self.value = value
+    def __repr__(self):
+        return 'Condition(%d)' % self.value
+    def __str__(self):
+        return 'Condition(%s)' % cond2mnem[self.value]
