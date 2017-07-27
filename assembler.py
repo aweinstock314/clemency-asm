@@ -70,7 +70,10 @@ MUF r0, r5, r10
 BLE &foo
 HT
 ''')
-    print(a.parse())
+    output, labels = a.parse()
+    print(labels)
+    print(output)
+    print('\n'.join(map(str, output)))
 
 if __name__ == '__main__':
     tests()

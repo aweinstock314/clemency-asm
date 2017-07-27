@@ -13,12 +13,16 @@ class Reg:
             raise ParseException(line, i, "Invalid register number %d" % (num,))
     def __repr__(self):
         return 'Reg(%r, %r)' % (self.name, self.num)
+    def __str__(self):
+        return self.name
 
 class Imm:
     def __init__(self, value):
         self.value = value
     def __repr__(self):
         return 'Imm(%r)' % value
+    def __str__(self):
+        return str(value)
 
 class Mem:
     def __init__(self, reg, offset, regcount):
@@ -27,6 +31,8 @@ class Mem:
         self.regcount = regcount
     def __repr__(self):
         return 'Mem(%r, %r, %r)' % (self.reg, self.offset, self.regcount)
+    def __str__(self):
+        return '[%s + %#x, %d]' % (self.reg, self.offset, self.regcount)
 
 class Ins:
     def __init__(self, name, uf, ops):
@@ -35,9 +41,13 @@ class Ins:
         self.ops = ops
     def __repr__(self):
         return 'Ins(%r, %r, %r)' % (self.name, self.uf, self.ops)
+    def __str__(self):
+        return '%s%s %s' % (self.name, ('.' if self.uf else ''), ','.join(map(str, self.ops)))
 
 class Label:
     def __init__(self, name):
         self.name = name
     def __repr__(self):
         return 'Label(%r)' % self.name
+    def __str__(self):
+        return '&%s' % (self.name,)
