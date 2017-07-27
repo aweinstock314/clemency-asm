@@ -1,4 +1,30 @@
+import itertools
+
 reg_list = ["r%02i"%(i) for i in range(28)] + ["st","ra","pc","fl"]
+
+cond2mnem = {
+    0b0000: 'n',
+    0b0001: 'e',
+    0b0010: 'l',
+    0b0011: 'le',
+    0b0100: 'g',
+    0b0101: 'ge',
+    0b0110: 'no',
+    0b0111: 'o',
+
+    0b1000: 'ns',
+    0b1001: 's',
+    0b1010: 'sl',
+    0b1011: 'sle',
+    0b1100: 'sg',
+    0b1101: 'sge',
+    0b1110: 'UNDEFINED', # TODO: quintuple-check that these are numbered consistently between here/page19 of the manual/the emulator
+    0b1111: '',
+    }
+
+mnem2cond = {k: v for (v,k) in cond2mnem.items()}
+
+branch_ops = {base+k: (base, v) for (base, (k, v)) in itertools.product(['b', 'c', 'br', 'cr'], mnem2cond.items())}
 
 class Reg:
     def __init__(self,name):
@@ -40,9 +66,12 @@ class Mem:
 
 class Ins:
     def __init__(self, name, uf, ops):
-        self.name = name
+        self.name = name.lower()
         self.uf = uf
         self.ops = ops
+        if self.name in branch_ops:
+            self.name, cond = branch_ops[self.name]
+            self.ops = [Condition(cond)] + self.ops
     def __repr__(self):
         return 'Ins(%r, %r, %r)' % (self.name, self.uf, self.ops)
     def __str__(self):
@@ -75,28 +104,6 @@ class MemoryFlags:
                 }[self.value]
     def untyped_repr(self, _):
         return [self.value]
-
-cond2mnem = {
-    0b0000: 'n',
-    0b0001: 'e',
-    0b0010: 'l',
-    0b0011: 'le',
-    0b0100: 'g',
-    0b0101: 'ge',
-    0b0110: 'no',
-    0b0111: 'o',
-
-    0b1000: 'ns',
-    0b1001: 's',
-    0b1010: 'sl',
-    0b1011: 'sle',
-    0b1100: 'sg',
-    0b1101: 'sge',
-    0b1110: 'UNDEFINED', # TODO: quintuple-check that these are numbered consistently between here/page19 of the manual/the emulator
-    0b1111: '',
-    }
-
-mnem2cond = {k: v for (v,k) in cond2mnem.items()}
 
 class Condition:
     def __init__(self, value):

@@ -63,7 +63,8 @@ def assemble(output, labels):
         processed_ops = []
         for op in instr.ops:
             processed_ops.extend(op.untyped_repr(None))
-        (_, size) = exporter.export(instr.name, instr.uf, processed_ops)
+        processed_ops.append(instr.uf)
+        (_, size) = exporter.export(instr.name.upper(), map(str, processed_ops))
         sizes.append(size)
 
     print(sizes)
@@ -73,8 +74,9 @@ def assemble(output, labels):
     for instr in output:
         processed_ops = []
         for op in instr.ops:
-            processed_ops.extend(op.untyped_repr((labels, sizes))
-        (value, _) = exporter.export(instr.name, instr.uf, processed_ops)
+            processed_ops.extend(op.untyped_repr((labels, sizes)))
+        processed_ops.append(instr.uf)
+        (value, _) = exporter.export(instr.name.upper(), map(str, processed_ops))
         values.append(value)
     print(values)
 
