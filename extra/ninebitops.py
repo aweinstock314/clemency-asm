@@ -1,6 +1,6 @@
 import bitstring
 
-def pack9(x):
+def pack9_ascii(x):
     bits = []
     if len(x) % 9 != 0:
         x += "0"
@@ -15,6 +15,23 @@ def pack9(x):
         bytes.append(chr(int(byte, 2)))
 
     return "".join(bytes)
+
+def pack9_to_bytes(data):
+    '''
+    Pack big endian list of ints into middle endian encoded values as string
+    data is a list of tuples where each tuple is (width, int)
+    '''
+
+    bits = None
+    for tup in data:
+        width = tup[1]
+        val = tup[2]
+        val = swap_endianness(val, width)
+        if bits is None:
+            bits = bitstring.BitArray(val)
+        else:
+            bits += bitstring.BitArray(val)
+    return bits.tobytes()
 
 def unpack9_to_ascii(x):
 
