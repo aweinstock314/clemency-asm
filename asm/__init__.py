@@ -4,7 +4,7 @@ import struct
 def asm_bytes(asm):
     ast, labels = assembler.parse(asm)
     output = assembler.assemble(ast, labels)
-    return assembler.binary_encode(output).tobytes()
+    return assembler.nytes_to_bytes(output)
 
 def asm(asm):
     ast, labels = assembler.parse(asm)
