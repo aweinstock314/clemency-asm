@@ -72,11 +72,8 @@ class Ins:
         self.name = name.lower()
         self.uf = uf
         self.ops = ops
-        self.cond = None
-        if self.name in branch_ops:
-            _, self.cond = branch_ops[self.name]
     def __repr__(self):
-        return 'Ins(%r, %r, %r, %r)' % (self.name, self.uf, self.ops, self.cond)
+        return 'Ins(%r, %r, %r)' % (self.name, self.uf, self.ops)
     def __str__(self):
         return '%s%s %s' % (self.name, ('.' if self.uf else ''), ', '.join(map(str, self.ops)))
 

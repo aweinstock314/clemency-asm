@@ -71,11 +71,7 @@ def assemble(ast, labels):
         for op in instr.ops:
             processed_ops.extend(op.untyped_repr(None))
         processed_ops.append(instr.uf)
-        if instr.cond:
-            name, _ = branch_ops[instr.name]
-            processed_ops = [instr.cond] + processed_ops
-        else:
-            name = instr.name
+        name = instr.name
 
         print processed_ops
         # print name
@@ -91,11 +87,7 @@ def assemble(ast, labels):
         for op in instr.ops:
             processed_ops.extend(op.untyped_repr((labels, sizes)))
         processed_ops.append(instr.uf)
-        if instr.cond:
-            name, _ = branch_ops[instr.name]
-            processed_ops = [instr.cond] + processed_ops
-        else:
-            name = instr.name
+        name = instr.name
         # print name
         (value, _) = encode(name.upper(), processed_ops)
         values.append(value)
