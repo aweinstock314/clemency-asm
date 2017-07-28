@@ -69,6 +69,24 @@ def unpack9_to_int_list(x):
 
     return newbytes_ints
 
+def unpack9_to_int_list_with_wdith(data, format_and_len):
+    '''
+    Unpack data based on format and length tuple list
+    '''
+
+    bits = bitstring.BitArray(bytes=data)
+    ret_ints = []
+    cur_pos = 0
+    for tup in format_and_len:
+        width = tup[0]
+        num_vals = tup[1]
+
+        for i in xrange(num_vals):
+            cur_val = swap_endianness(bits[cur_pos:cur_pos + width*9].uint, width)
+            ret_ints.append(cur_val)
+            cur_pos += width * 9
+    return ret_ints
+
 def swap_endianness(data_as_int, width):
     '''
     Swaps between middle endian byte order and big endian for ints

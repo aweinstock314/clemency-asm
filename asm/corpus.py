@@ -52,7 +52,7 @@ def generate():
 def all_possible_for_class(cls):
     if cls == Reg:
         #return [Reg(x) for x in reg_list]
-        return [Reg(x) for x in 'r00', 'fl', 'pc']
+        return [Reg(x) for x in 'r00', 'ra', 'pc']
     elif cls == Mem:
         ret = []
         for reg in all_possible_for_class(Reg):
@@ -61,7 +61,7 @@ def all_possible_for_class(cls):
                     ret.append(Mem(reg.name, off, regcount))
         return ret
     elif cls == Imm:
-        return [0, 1, 5] # TODO: more representative extrema?
+        return [1, 2, 5] # TODO: more representative extrema?
     elif cls == MemoryFlags:
         return [MemoryFlags(i) for i in range(4)]
     elif cls == Condition:
