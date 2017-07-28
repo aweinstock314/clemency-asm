@@ -77,7 +77,7 @@ def assemble(ast, labels):
         processed_ops.append(instr.uf)
         name = instr.name
 
-        print processed_ops
+        #print processed_ops
         # print name
         (_, size) = encode(name.upper(), processed_ops)
         sizes.append(size)
