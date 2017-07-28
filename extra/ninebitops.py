@@ -1,5 +1,24 @@
 import bitstring
 
+def pack9_to_ascii(x):
+    """
+        8 bit byte ascii string to 9 bit byte ascii string
+    """
+    bits = ""
+    
+    # pad to 
+    for char in x: 
+        bits += bin(ord(char))[2:].rjust(9, "0")
+
+    pad = len(bits) % 8
+    if pad: 
+        bits += "0"* (8 - pad)
+    
+    bits = "0b" + bits
+    bstream = bitstring.BitStream(bits)
+     
+    return bstream.read(len(bstream)).hex.decode("hex")
+    
 def pack9_ascii(x):
     bits = []
     if len(x) % 9 != 0:
