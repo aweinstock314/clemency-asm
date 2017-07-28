@@ -101,6 +101,11 @@ def assemble(ast, labels):
             nyte = nyte & ((1<<9)-1)
             nytes.append(nyte)
         nytes.reverse()
+        # swap endian (2, 1, 3, 2, 1, 3)
+        if len(nytes) >= 2:
+            nytes[0], nytes[1] = nytes[1], nytes[0]
+        if len(nytes) >= 5:
+            nytes[3], nytes[4] = nytes[4], nytes[3]
         outputs.append(nytes)
     return outputs
 
