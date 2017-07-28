@@ -2,6 +2,7 @@ from collections import defaultdict
 from packers import *
 
 enc_fun_to_op = {
+    enc_ra_rb: ['ZES', 'ZEW', 'SES', 'SEW'],
     enc_ra_rb_me: ['SMP'], 
     enc_ra_rb_rc: ['AD', 'ADC', 'ADCM', 'ADF', 'ADFM', 'ADM', 'AN', 'ANM', 'DMT', 'DV', 'DVF', 'DVFM', 'DVM', 'DVS', 'DVSM', 'MD', 'MDF', 'MDFM', 'MDM', 'MDS', 'MDSM', 'MU', 'MUF', 'MUFM', 'MUM', 'MUS', 'MUSM', 'OR', 'ORM', 'RL', 'RLM', 'RR', 'RRM', 'SA', 'SAM', 'SB', 'SBC', 'SBCM', 'SBF', 'SBFM', 'SBM', 'SL', 'SLM', 'SR', 'SRM', 'XR', 'XRM'], 
     enc_no_re: ['DBRK', 'HT', 'IR', 'RE', 'WT'], 
@@ -11,7 +12,7 @@ enc_fun_to_op = {
     enc_ra_rb_of_re_i: ['LDSI','LDTI','LDWI','STSI','STTI','STWI'],
     enc_ra_rb_of_re_d: ['LDSD','LDTD','LDWD','STSD','STTD','STWI'],
     enc_of: ['CAR'], 
-    enc_ra_rb_lo_ve_no_fl_al: ['RMP', 'SES', 'SEW', 'ZES', 'ZEW'], 
+    enc_ra_rb_lo_ve_no_fl_al: ['RMP'], 
     enc_ra_im_al: ['MH', 'ML', 'MS'], 
     enc_ra_rb_sh_ve: ['CM', 'CMF', 'CMFM', 'CMM'], 
     enc_ra_no_fl: ['DI', 'EI', 'RF', 'SF'], 
@@ -20,7 +21,7 @@ enc_fun_to_op = {
     enc_ra_rb_lo_op: ['BF', 'BFM', 'NG', 'NGF', 'NGFM', 'NGM', 'NT', 'NTM'], 
     enc_ra_wi_fl: ['RND', 'RNDM'], 
     enc_ra_im: ['CMI', 'CMIM'], 
-    enc_ra_rb_im: ['ADCI', 'ADCIM', 'ADI', 'ADIM', 'ANI', 'DVI', 'DVIM', 'DVIS', 'DVISM', 'MDI', 'MDIM', 'MDIS', 'MDISM', 'MUI', 'MUIM', 'MUIS', 'MUISM', 'ORI', 'RLI', 'RLIM', 'RRI', 'RRIM', 'SAI', 'SAIM', 'SBCI', 'SBCIM', 'SBI. SBIM', 'SLI', 'SLIM', 'SRI', 'SRIM', 'XRI'],
+    enc_ra_rb_im: ['ADCI', 'ADCIM', 'ADI', 'ADIM', 'ANI', 'DVI', 'DVIM', 'DVIS', 'DVISM', 'MDI', 'MDIM', 'MDIS', 'MDISM', 'MUI', 'MUIM', 'MUIS', 'MUISM', 'ORI', 'RLI', 'RLIM', 'RRI', 'RRIM', 'SAI', 'SAIM', 'SBCI', 'SBCIM', 'SBI', 'SBIM', 'SLI', 'SLIM', 'SRI', 'SRIM', 'XRI'],
 }
 
 enc_op_to_fun = {}
@@ -45,7 +46,7 @@ dec_fun_to_op = {
     dec_ra_rb_lo_op: ['BF', 'BFM', 'NG', 'NGF', 'NGFM', 'NGM', 'NT', 'NTM'], 
     dec_ra_wi_fl: ['RND', 'RNDM'], 
     dec_ra_im: ['CMI', 'CMIM'], 
-    dec_ra_rb_im: ['ADCI', 'ADCIM', 'ADI', 'ADIM', 'ANI', 'DVI', 'DVIM', 'DVIS', 'DVISM', 'MDI', 'MDIM', 'MDIS', 'MDISM', 'MUI', 'MUIM', 'MUIS', 'MUISM', 'ORI', 'RLI', 'RLIM', 'RRI', 'RRIM', 'SAI', 'SAIM', 'SBCI', 'SBCIM', 'SBI. SBIM', 'SLI', 'SLIM', 'SRI', 'SRIM', 'XRI'],
+    dec_ra_rb_im: ['ADCI', 'ADCIM', 'ADI', 'ADIM', 'ANI', 'DVI', 'DVIM', 'DVIS', 'DVISM', 'MDI', 'MDIM', 'MDIS', 'MDISM', 'MUI', 'MUIM', 'MUIS', 'MUISM', 'ORI', 'RLI', 'RLIM', 'RRI', 'RRIM', 'SAI', 'SAIM', 'SBCI', 'SBCIM', 'SBI', 'SBIM', 'SLI', 'SLIM', 'SRI', 'SRIM', 'XRI'],
 }
 
 dec_op_to_fun = {}
@@ -70,7 +71,7 @@ op_bits = {
     'B':[0b110000],
     'BF':[0b101001100,0b1000000],
     'BFM':[0b101001110,0b1000000],
-    'BR':[0b110010],
+    'BR':[0b110010, 0b000],
     'BRA':[0b111000100],
     'BRR':[0b111000000],
     'C':[0b110101],
@@ -171,7 +172,7 @@ op_bits = {
     'SBIM':[0b0000110,0b01], 
     'SBM':[0b0000110,0b0000], 
     'SES':[0b101000000111,0b00000], 
-    'SEW':[0b1010000010000,0b00000], 
+    'SEW':[0b101000001000,0b00000], 
     'SF':[0b101000001011,0b0], 
     'SL':[0b0101000,0b0000], 
     'SLI':[0b0111000,0b00], 
