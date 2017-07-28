@@ -69,7 +69,7 @@ def unpack9_to_int_list(x):
 
     return newbytes_ints
 
-def unpack_to_int_list_with_wdith(data, format_and_len):
+def unpack9_to_int_list_with_wdith(data, format_and_len):
     '''
     Unpack data based on format and length tuple list
     '''
