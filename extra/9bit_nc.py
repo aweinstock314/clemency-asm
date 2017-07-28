@@ -35,7 +35,8 @@ def do_interactive(p):
 
         buf = raw_input()
         string = ninebitops.pack9_to_ascii(buf) 
-        p.sendline(string)
+        p.send(string)
+        time.sleep(1)
 
 pargs = argparse.ArgumentParser()
 
