@@ -17,7 +17,7 @@ class ParseException:
     def __repr__(self):
         return 'ParseException on line %d: %s\n%r\n' % (self.lineno, self.msg, self.line)
 
-MP_MODES = ['n','r','rw','e']
+MP_MODES = ['n','r','rw','rx']
 LITERAL_REGEX = '\+?(0b[01]+|0x[0-9a-fA-F]+|\d+)'
 MEMORY_REGEX = r'^\[(r[0-9]+|pc|st|ra|fl)\s*\+\s*'+LITERAL_REGEX+',\s*'+LITERAL_REGEX+'\]$' # TODO: hex/bin offsets?
 
@@ -52,9 +52,9 @@ def parse(source):
                     ops.append(Mem(reg, offset, regcount))
                 elif op in ['pc', 'st', 'ra', 'fl']:
                     ops.append(Reg(op))
-		elif op in MP_MODES:
-		    lit = MP_MODES.index(op)
-		    ops.append(Imm(lit))
+                elif op in MP_MODES:
+                    lit = MP_MODES.index(op)
+                    ops.append(Imm(lit))
                 elif re.match('^r[0-9]+$', op):
                     ops.append(Reg(op))
                 elif re.match(r'^'+LITERAL_REGEX+'$', op):
@@ -68,44 +68,39 @@ def parse(source):
     return (ast, labels)
 
 def assemble(ast, labels):
+    def do_pass(data):
+        values = []
+        sizes = []
+        for instr in ast:
+            processed_ops = []
+            for op in instr.ops:
+                processed_ops.extend(op.untyped_repr(data))
+            processed_ops.append(instr.uf)
+
+            name = instr.name.lower()
+            if name in branch_ops:
+                (name, cond) = branch_ops[name]
+                processed_ops = [cond] + processed_ops
+
+            (value, size) = encode(name.upper(), processed_ops)
+            values.append(value)
+            sizes.append(size)
+        return (values, sizes)
+
     # first pass calculates sizes
-    sizes = []
-    for instr in ast:
-        processed_ops = []
-        for op in instr.ops:
-            processed_ops.extend(op.untyped_repr(None))
-        processed_ops.append(instr.uf)
-        name = instr.name
-
-        #print processed_ops
-        # print name
-        (_, size) = encode(name.upper(), processed_ops)
-        sizes.append(size)
-
-    #print(sizes)
+    (_, sizes) = do_pass(None)
 
     # second pass uses sizes for labels, accumulates generated instructions
-    values = []
-    for instr in ast:
-        processed_ops = []
-        for op in instr.ops:
-            processed_ops.extend(op.untyped_repr((labels, sizes)))
-        processed_ops.append(instr.uf)
-        name = instr.name
-        # print name
-        (value, _) = encode(name.upper(), processed_ops)
-        values.append(value)
-
-    # print(values)
+    (values, _) = do_pass((labels, sizes))
 
     outputs = []
     for (value, size) in zip(values, sizes):
-	nytes = []
-	for i in range(size):
-	    nyte = value >> (9*i)
+        nytes = []
+        for i in range(size):
+            nyte = value >> (9*i)
             nyte = nyte & ((1<<9)-1)
-	    nytes.append(nyte)
-	nytes.reverse()
+            nytes.append(nyte)
+        nytes.reverse()
         outputs.append(nytes)
     return outputs
 
@@ -114,38 +109,38 @@ def binary_encode(ins_list):
     for ins in ins_list:
         ba_temp = bitarray()
         for nyte in ins:    
-    	    ba = bitarray()
-            ba.frombytes(struct.pack('>H',nyte))
- 	    ba = ba[7:]
-	    ba_temp += ba
-        
-	ba2 = bitarray()
+            ba = bitarray()
+            ba.frombytes(struct.pack('>H', nyte))
+            ba = ba[7:]
+            ba_temp += ba
+
+        ba2 = bitarray()
         if len(ins) == 2:
-	    ba2[0:9] = ba_temp[9:18]
-	    ba2[9:18] = ba_temp[0:9]
-	    ba_full += ba2
-	elif len(ins) == 3:
-	    ba2[0:9] = ba_temp[9:18]
-	    ba2[9:18] = ba_temp[0:9]
-	    ba2[18:27] = ba_temp[18:27]
-	    ba_full += ba2
-	elif len(ins) == 4:
-	    ba2[0:9] = ba_temp[9:18]
-	    ba2[9:18] = ba_temp[0:9]
-	    ba2[18:27] = ba_temp[18:27]
-	    ba2[27:36] = ba_temp[27:36]
-	    ba_full += ba2
-	elif len(ins) == 6:
-	    ba2[0:9] = ba_temp[9:18]
-	    ba2[9:18] = ba_temp[0:9]
-	    ba2[18:27] = ba_temp[18:27]
-	    ba2[27:36] = ba_temp[36:45]
-	    ba2[36:45] = ba_temp[27:36]
-	    ba2[45:54] = ba_temp[45:54]
-	    ba_full += ba2
-	
+            ba2[0:9] = ba_temp[9:18]
+            ba2[9:18] = ba_temp[0:9]
+            ba_full += ba2
+        elif len(ins) == 3:
+            ba2[0:9] = ba_temp[9:18]
+            ba2[9:18] = ba_temp[0:9]
+            ba2[18:27] = ba_temp[18:27]
+            ba_full += ba2
+        elif len(ins) == 4:
+            ba2[0:9] = ba_temp[9:18]
+            ba2[9:18] = ba_temp[0:9]
+            ba2[18:27] = ba_temp[18:27]
+            ba2[27:36] = ba_temp[27:36]
+            ba_full += ba2
+        elif len(ins) == 6:
+            ba2[0:9] = ba_temp[9:18]
+            ba2[9:18] = ba_temp[0:9]
+            ba2[18:27] = ba_temp[18:27]
+            ba2[27:36] = ba_temp[36:45]
+            ba2[36:45] = ba_temp[27:36]
+            ba2[45:54] = ba_temp[45:54]
+            ba_full += ba2
+        
     return ba_full
-	    
+            
 def tests():
     asm = '''
 AD. r1, r3, r2
@@ -159,7 +154,8 @@ HT
     print(labels)
     print(ast)
     print('\n'.join(map(str, ast)))
-    assemble(ast, labels)
+    mc = assemble(ast, labels)
+    print(mc)
 
 if __name__ == '__main__':
     if len(sys.argv) == 3:
@@ -169,7 +165,7 @@ if __name__ == '__main__':
             print ast, labels
             output = assemble(ast, labels)
             print(output)
-	with open(sys.argv[2], 'w') as f2:
-	    f2.write(binary_encode(output).tobytes())
+        with open(sys.argv[2], 'w') as f2:
+            f2.write(binary_encode(output).tobytes())
     else:
         tests()
