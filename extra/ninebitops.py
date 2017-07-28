@@ -62,7 +62,7 @@ def unpack9_to_int_list(x):
 
     return newbytes_ints
 
-def swap_endianess(data_as_int, width):
+def swap_endianness(data_as_int, width):
     '''
     Swaps between middle endian byte order and big endian for ints
     '''
