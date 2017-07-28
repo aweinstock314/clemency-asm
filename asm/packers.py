@@ -204,22 +204,6 @@ def dec_ra_rb_lo_ve_no_fl_al(ins):
     opcode2 = (ins >> 0) & 1023
     return (opcode,opcode2,ra,rb,uf,), 3
 
-def enc_ra_rb_lo_ve_no_fl_al(opcode,opcode2,ra,rb,uf):
-    ret = 0
-    if opcode.bit_length() > 12:
-        raise Exception('operand %s out of range 12' % opcode)
-    ret = ret | (opcode << 15)
-    if ra.bit_length() > 5:
-        raise Exception('operand %s out of range 5' % ra)
-    ret = ret | (ra << 10)
-    if rb.bit_length() > 5:
-        raise Exception('operand %s out of range 5' % rb)
-    ret = ret | (rb << 5)
-    if opcode2.bit_length() > 5:
-        raise Exception('operand %s out of range 5' % opcode2)
-    ret = ret | (opcode2 << 0)
-    return (ret,3)
-
 def dec_ra_rb_lo_ve_no_fl_al(ins):
     uf = False
     opcode = (ins >> 15) & 4095
