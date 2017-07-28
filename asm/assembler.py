@@ -137,17 +137,19 @@ if __name__ == '__main__':
             output = assemble(ast, labels)
             print(output)
 	with open(sys.argv[2], 'w') as f2:
+	    ba_full = bitarray()
 	    for ins in output:
-		ba_full = bitarray()
+		ba_temp = bitarray()
                 for nyte in ins:    
 	    	    ba = bitarray()
                     ba.frombytes(struct.pack('>H',nyte))
 		    ba = ba[7:]
-		    ba_full += ba
+		    ba_temp += ba
             	ba2 = bitarray()
-	    	ba2[0:9] = ba_full[9:18]
-	    	ba2[9:18] = ba_full[0:9]
-	    	ba2[18:27] = ba_full[18:27]
-	    	f2.write(ba2.tobytes())
+	    	ba2[0:9] = ba_temp[9:18]
+	        ba2[9:18] = ba_temp[0:9]
+	    	ba2[18:27] = ba_temp[18:27]
+		ba_full += ba2
+	    f2.write(ba_full.tobytes())
     else:
         tests()
