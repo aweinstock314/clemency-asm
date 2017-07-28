@@ -113,6 +113,43 @@ def assemble(ast, labels):
         outputs.append(nytes)
     return outputs
 
+def binary_encode(ins_list):
+    ba_full = bitarray()
+    for ins in output:
+        ba_temp = bitarray()
+        for nyte in ins:    
+    	    ba = bitarray()
+            ba.frombytes(struct.pack('>H',nyte))
+ 	    ba = ba[7:]
+	    ba_temp += ba
+        
+	ba2 = bitarray()
+        if len(ins) == 2:
+	    ba2[0:9] = ba_temp[9:18]
+	    ba2[9:18] = ba_temp[0:9]
+	    ba_full += ba2
+	elif len(ins) == 3:
+	    ba2[0:9] = ba_temp[9:18]
+	    ba2[9:18] = ba_temp[0:9]
+	    ba2[18:27] = ba_temp[18:27]
+	    ba_full += ba2
+	elif len(ins) == 4:
+	    ba2[0:9] = ba_temp[9:18]
+	    ba2[9:18] = ba_temp[0:9]
+	    ba2[18:27] = ba_temp[18:27]
+	    ba2[27:36] = ba_temp[27:36]
+	    ba_full += ba2
+	elif len(ins) == 6:
+	    ba2[0:9] = ba_temp[9:18]
+	    ba2[9:18] = ba_temp[0:9]
+	    ba2[18:27] = ba_temp[18:27]
+	    ba2[27:36] = ba_temp[36:45]
+	    ba2[36:45] = ba_temp[27:36]
+	    ba2[45:54] = ba_temp[45:54]
+	    ba_full += ba2
+	
+    return ba_full
+	    
 def tests():
     asm = '''
 AD. r1, r3, r2
@@ -137,19 +174,6 @@ if __name__ == '__main__':
             output = assemble(ast, labels)
             print(output)
 	with open(sys.argv[2], 'w') as f2:
-	    ba_full = bitarray()
-	    for ins in output:
-		ba_temp = bitarray()
-                for nyte in ins:    
-	    	    ba = bitarray()
-                    ba.frombytes(struct.pack('>H',nyte))
-		    ba = ba[7:]
-		    ba_temp += ba
-            	ba2 = bitarray()
-	    	ba2[0:9] = ba_temp[9:18]
-	        ba2[9:18] = ba_temp[0:9]
-	    	ba2[18:27] = ba_temp[18:27]
-		ba_full += ba2
-	    f2.write(ba_full.tobytes())
+	    f2.write(binary_encode(output).tobytes())
     else:
         tests()
