@@ -48,9 +48,9 @@ class Imm:
     def __init__(self, value):
         self.value = value
     def __repr__(self):
-        return 'Imm(%r)' % value
+        return 'Imm(%r)' % self.value
     def __str__(self):
-        return str(value)
+        return str(self.value)
     def untyped_repr(self, _):
         return [self.value]
 
