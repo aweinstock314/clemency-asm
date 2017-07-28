@@ -52,7 +52,7 @@ def generate():
 def all_possible_for_class(cls):
     if cls == Reg:
         #return [Reg(x) for x in reg_list]
-        return [Reg(x) for x in 'r00', 'fl', 'pc']
+        return [Reg(x) for x in 'r00', 'ra', 'pc']
     elif cls == Mem:
         ret = []
         for reg in all_possible_for_class(Reg):
