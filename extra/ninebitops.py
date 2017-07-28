@@ -65,6 +65,29 @@ def unpack9_to_ascii(x):
 
     return ascii_data
 
+def unpack9_to_ascii(x):
+
+    newbytes_ints = unpack9_to_int_list(x)
+    ascii_data = ""
+
+    for i in newbytes_ints:
+        if i < 128:
+            ascii_data += chr(i)
+        #else:
+        #    raise Exception("Non-ascii 9-bit byte value: %x" % val)
+
+    return ascii_data
+
+def unpack9_to_8bit_string(x):
+    newbytes_ints = unpack9_to_int_list(x)
+    bit8  = ""
+
+    for i in newbytes_ints:
+        if i < 128:
+            bit8 += chr(i)
+    return bit8 
+
+
 def unpack9_to_int_list(x):
     bits = bitstring.BitArray(bytes=x)
 
@@ -125,3 +148,68 @@ def swap_endianness(data_as_int, width):
         return data_as_int
     else:
         raise Exception("Invalid width for endianess swap")
+
+def ascii_score(s):
+    score = 0
+    for c in s:
+        if c < 128:
+            c = chr(c)
+            if c in string.ascii_letters+string.digits+' .:>,!\n':
+                score+=1
+            elif c in string.printable:
+                score+=.2
+    return score
+
+#def strr(y):
+#    if type(y) == list:
+#        return ''.join(repr(chr(x))[1:-1] if x<127 else '?' for x in y)
+#    else:
+#        return repr(chr(y))[1:-1] if y<127 else '?'
+
+def unpack_multiple_lines(bit9,depth=0):
+    bit8 = ninebitops.unpack9_to_int_list(bit9)
+
+    splits = []
+
+    i = 1
+    while i < len(bit8): 
+        score_normal = ascii_score(bit8[i:])
+        edge = int(math.ceil((i*9)/8.0))
+        
+        #print '--'*depth,'edge=',edge*8,'ind',(i*9)
+        bit8_edge = ninebitops.unpack9_to_int_list(bit9[edge:])
+        score_edge = ascii_score(bit8_edge)
+        #print '--'*depth,'index',i,'char',strr(bit8[i])
+        #print '--'*depth,'normal',strr(bit8[i:]),len(bit8[i:])
+        #print '--'*depth,'edge',strr(bit8_edge),len(bit8_edge)
+        #print '--'*depth,'scores:',score_normal, score_edge, (i*9)%8
+        if score_edge > score_normal and ((ord(bit9[edge-1])&(0xff >> ((i*9)%8))) == 0):
+            # Check if we can actually get better
+            bestedge = unpack_multiple_lines(bit9[edge:],depth+1)
+            #print '--'*depth,'Best',strr(bestedge)
+
+            splits.append({
+                'index':i,
+                'edge_string':bestedge
+                })
+        i += 1
+
+    final = []
+    if splits == []:
+        return bit8
+    endInd = None
+    for split in reversed(splits):
+        i = split['index']
+        normal = (bit8[i:] if endInd is None else bit8[i:endInd]) + final
+        
+        #print '--'*depth, 'comparing for index ',i
+        #print '--'*depth, strr(normal), ascii_score(normal)
+        #print '--'*depth, strr(split['edge_string']), ascii_score(split['edge_string'])
+        if ascii_score(normal) >= ascii_score(split['edge_string']):
+            final = normal
+        else:
+            final = split['edge_string']
+        endInd = i
+    if depth==0:
+        return ''.join(chr(x) if x<127 else '?' for x in final)
+    return final
