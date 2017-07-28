@@ -45,4 +45,4 @@ pargs = pargs.parse_args()
 
 p = remote(pargs.ip, pargs.port)
 
-
+do_interactive(p)
