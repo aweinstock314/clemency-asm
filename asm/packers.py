@@ -1,3 +1,4 @@
+enc_fun_to_dec_fun = {}
 def enc_ra_rb_of_re(opcode,opcode2,ra,rb,mem,regcount,uf):
     ret = 0
     if opcode.bit_length() > 7:
@@ -33,6 +34,8 @@ def dec_ra_rb_of_re(ins):
     mem = (ins >> 3) & 134217727
     regcount = (ins >> 32) & 31
     return (opcode,opcode2,ra,rb,mem,regcount,uf,), 6
+
+enc_fun_to_dec_fun[enc_ra_rb_of_re] = dec_ra_rb_of_re
 
 def enc_ra_rb_of_re_i(opcode,opcode2,ra,rb,mem,regcount,uf):
     ret = 0
@@ -70,6 +73,8 @@ def dec_ra_rb_of_re_i(ins):
     regcount = (ins >> 32) & 31
     return (opcode,opcode2,ra,rb,mem,regcount,uf,), 6
 
+enc_fun_to_dec_fun[enc_ra_rb_of_re_i] = dec_ra_rb_of_re_i
+
 def enc_ra_rb_of_re_d(opcode,opcode2,ra,rb,mem,regcount,uf):
     ret = 0
     if opcode.bit_length() > 7:
@@ -106,6 +111,8 @@ def dec_ra_rb_of_re_d(ins):
     regcount = (ins >> 32) & 31
     return (opcode,opcode2,ra,rb,mem,regcount,uf,), 6
 
+enc_fun_to_dec_fun[enc_ra_rb_of_re_d] = dec_ra_rb_of_re_d
+
 def enc_ra_rb_rc(opcode,opcode2,ra,rb,rc,uf):
     ret = 0
     if opcode.bit_length() > 7:
@@ -137,6 +144,8 @@ def dec_ra_rb_rc(ins):
     rc = (ins >> 5) & 31
     uf = (ins >> 0) & 1
     return (opcode,opcode2,ra,rb,rc,uf,), 3
+
+enc_fun_to_dec_fun[enc_ra_rb_rc] = dec_ra_rb_rc
 
 def enc_ra_rb_im(opcode,opcode2,ra,rb,imm,uf):
     ret = 0
@@ -170,6 +179,8 @@ def dec_ra_rb_im(ins):
     uf = (ins >> 0) & 1
     return (opcode,opcode2,ra,rb,imm,uf,), 3
 
+enc_fun_to_dec_fun[enc_ra_rb_im] = dec_ra_rb_im
+
 def enc_ra_rb_lo_op(opcode,opcode2,ra,rb,uf):
     ret = 0
     if opcode.bit_length() > 9:
@@ -197,6 +208,8 @@ def dec_ra_rb_lo_op(ins):
     rb = (ins >> 8) & 31
     uf = (ins >> 0) & 1
     return (opcode,opcode2,ra,rb,uf,), 3
+
+enc_fun_to_dec_fun[enc_ra_rb_lo_op] = dec_ra_rb_lo_op
 
 def enc_ra_rb_me(opcode,opcode2,ra,rb,memoryflags,uf):
     ret = 0
@@ -228,6 +241,8 @@ def dec_ra_rb_me(ins):
     memoryflags = (ins >> 7) & 3
     return (opcode,opcode2,ra,rb,memoryflags,uf,), 3
 
+enc_fun_to_dec_fun[enc_ra_rb_me] = dec_ra_rb_me
+
 def enc_ra_rb_lo_ve_no_fl(opcode,opcode2,ra,rb,uf):
     ret = 0
     if opcode.bit_length() > 9:
@@ -251,6 +266,8 @@ def dec_ra_rb_lo_ve_no_fl(ins):
     ra = (ins >> 13) & 31
     rb = (ins >> 8) & 31
     return (opcode,opcode2,ra,rb,uf,), 3
+
+enc_fun_to_dec_fun[enc_ra_rb_lo_ve_no_fl] = dec_ra_rb_lo_ve_no_fl
 
 def enc_ra_rb_lo_ve_no_fl_al(opcode,opcode2,ra,rb,uf):
     ret = 0
@@ -276,6 +293,8 @@ def dec_ra_rb_lo_ve_no_fl_al(ins):
     rb = (ins >> 10) & 31
     return (opcode,opcode2,ra,rb,uf,), 3
 
+enc_fun_to_dec_fun[enc_ra_rb_lo_ve_no_fl_al] = dec_ra_rb_lo_ve_no_fl_al
+
 def enc_ra_rb_lo_ve_no_fl_al_tw(opcode,opcode2,ra,rb,uf):
     ret = 0
     if opcode.bit_length() > 12:
@@ -300,6 +319,8 @@ def dec_ra_rb_lo_ve_no_fl_al_tw(ins):
     rb = (ins >> 5) & 31
     return (opcode,opcode2,ra,rb,uf,), 3
 
+enc_fun_to_dec_fun[enc_ra_rb_lo_ve_no_fl_al_tw] = dec_ra_rb_lo_ve_no_fl_al_tw
+
 def enc_ra_rb_sh_ve(opcode,ra,rb,uf):
     ret = 0
     if opcode.bit_length() > 8:
@@ -319,6 +340,8 @@ def dec_ra_rb_sh_ve(ins):
     ra = (ins >> 5) & 31
     rb = (ins >> 0) & 31
     return (opcode,ra,rb,uf,), 2
+
+enc_fun_to_dec_fun[enc_ra_rb_sh_ve] = dec_ra_rb_sh_ve
 
 def enc_ra_im(opcode,ra,imm,uf):
     ret = 0
@@ -340,6 +363,8 @@ def dec_ra_im(ins):
     imm = (ins >> 0) & 16383
     return (opcode,ra,imm,uf,), 3
 
+enc_fun_to_dec_fun[enc_ra_im] = dec_ra_im
+
 def enc_ra_im_al(opcode,ra,imm,uf):
     ret = 0
     if opcode.bit_length() > 5:
@@ -359,6 +384,8 @@ def dec_ra_im_al(ins):
     ra = (ins >> 17) & 31
     imm = (ins >> 0) & 131071
     return (opcode,ra,imm,uf,), 3
+
+enc_fun_to_dec_fun[enc_ra_im_al] = dec_ra_im_al
 
 def enc_co_ra(opcode,opcode2,condition,ra,uf):
     ret = 0
@@ -384,6 +411,8 @@ def dec_co_ra(ins):
     ra = (ins >> 3) & 31
     return (opcode,opcode2,condition,ra,uf,), 2
 
+enc_fun_to_dec_fun[enc_co_ra] = dec_co_ra
+
 def enc_ra_no_fl(opcode,opcode2,ra,uf):
     ret = 0
     if opcode.bit_length() > 12:
@@ -403,6 +432,8 @@ def dec_ra_no_fl(ins):
     opcode2 = (ins >> 0) & 1
     ra = (ins >> 1) & 31
     return (opcode,opcode2,ra,uf,), 2
+
+enc_fun_to_dec_fun[enc_ra_no_fl] = dec_ra_no_fl
 
 def enc_ra_wi_fl(opcode,opcode2,ra,uf):
     ret = 0
@@ -428,6 +459,8 @@ def dec_ra_wi_fl(ins):
     uf = (ins >> 0) & 1
     return (opcode,opcode2,ra,uf,), 3
 
+enc_fun_to_dec_fun[enc_ra_wi_fl] = dec_ra_wi_fl
+
 def enc_co(opcode,condition,offset,uf):
     ret = 0
     if opcode.bit_length() > 6:
@@ -448,6 +481,8 @@ def dec_co(ins):
     offset = (ins >> 0) & 131071
     return (opcode,condition,offset,uf,), 3
 
+enc_fun_to_dec_fun[enc_co] = dec_co
+
 def enc_lo(opcode,location,uf):
     ret = 0
     if opcode.bit_length() > 9:
@@ -463,6 +498,8 @@ def dec_lo(ins):
     opcode = (ins >> 27) & 511
     location = (ins >> 0) & 134217727
     return (opcode,location,uf,), 4
+
+enc_fun_to_dec_fun[enc_lo] = dec_lo
 
 def enc_of(opcode,offset,uf):
     ret = 0
@@ -480,6 +517,8 @@ def dec_of(ins):
     offset = (ins >> 0) & 134217727
     return (opcode,offset,uf,), 4
 
+enc_fun_to_dec_fun[enc_of] = dec_of
+
 def enc_no_re(opcode,uf):
     ret = 0
     if opcode.bit_length() > 18:
@@ -491,4 +530,6 @@ def dec_no_re(ins):
     uf = False
     opcode = (ins >> 0) & 262143
     return (opcode,uf,), 2
+
+enc_fun_to_dec_fun[enc_no_re] = dec_no_re
 
