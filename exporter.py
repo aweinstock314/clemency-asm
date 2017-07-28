@@ -397,7 +397,7 @@ ops = {'AD':[0b000000,0b0000],
         'MUSM':[0b0001010,0b0010],
         'NG':[0b101001100,0b0000000],
         'NGF':[0b101001101,0b0000000],
-        'NGFM':[0b101001111][0b0000000],
+        'NGFM':[0b101001111,0b0000000],
         'NGM':[0b101001110,0b0000000],
         'NT':[0b101001100,0b0100000],
         'NTM':[0b101001110,0b0100000],
@@ -482,3 +482,31 @@ def test():
     export("RND",["1","1"])
     export("CMI",["1","1","1"])
     export("ADCI",["1","1","1","1"])
+
+"""
+bits = {}
+    
+for i in ops:
+    
+    print i
+    if i == "RLM":
+        pdb.set_trace()
+    
+    b = ops[i]
+
+    if len(b) == 2:
+        if not b[0] in  bits:
+            bits[b[0]] = {}
+        bits[b[0]][b[1]] = i
+
+    if len(b) == 1:
+        if not b[0] in  bits:
+            bits[b[0]] = {}
+        bits[b[0]] = i
+   
+    else:
+        print str(b[0])+":"+i+","
+   
+
+print bits
+"""
