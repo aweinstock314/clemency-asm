@@ -1,19 +1,3 @@
-def enc_ra_rb(opcode, opcode2, ra, rb, uf):
-    ret = 0
-    if opcode.bit_length() > 12:
-        raise Exception('operand %s out of range 12' % opcode)
-    ret = ret | (opcode << (26-11))
-    if ra.bit_length() > 5:
-        raise Exception('operand %s out of range 5' % ra)
-    ret = ret | (ra << (26-16))
-    if rb.bit_length() > 5:
-        raise Exception('operand %s out of range 5' % rb)
-    ret = ret | (rb << (26-21))
-    if opcode2.bit_length() > 5:
-        raise Exception('operand %s out of range 5' % opcode2)
-    ret = ret | (opcode2 << 0)
-    return (ret,3)
-
 def enc_ra_rb_of_re(opcode,opcode2,ra,rb,mem,regcount,uf):
     ret = 0
     if opcode.bit_length() > 7:
@@ -25,18 +9,30 @@ def enc_ra_rb_of_re(opcode,opcode2,ra,rb,mem,regcount,uf):
     if rb.bit_length() > 5:
         raise Exception('operand %s out of range 5' % rb)
     ret = ret | (rb << 37)
+    ret = ret | (0 << 30)
+    if mem.bit_length() > 27:
+        raise Exception('operand %s out of range 27' % mem)
+    ret = ret | (mem << 3)
     if regcount.bit_length() > 5:
         raise Exception('operand %s out of range 5' % regcount)
     if regcount == 0:
         raise Exception('negative regcount')
     ret = ret | ((regcount-1) << 32)
-    if mem.bit_length() > 27:
-        raise Exception('operand %s out of range 27' % mem)
-    ret = ret | (mem << 3)
     if opcode2.bit_length() > 3:
         raise Exception('operand %s out of range 3' % opcode2)
     ret = ret | (opcode2 << 0)
     return (ret,6)
+
+def dec_ra_rb_of_re(ins):
+    uf = False
+    opcode = (ins >> 47) & 127
+    ra = (ins >> 42) & 31
+    rb = (ins >> 37) & 31
+    assert ((ins >> 30) & 3) == 0
+    mem = (ins >> 3) & 134217727
+    regcount = (ins >> 32) & 31
+    opcode2 = (ins >> 0) & 7
+    return (opcode,opcode2,ra,rb,mem,regcount,uf,), 6
 
 def enc_ra_rb_of_re_i(opcode,opcode2,ra,rb,mem,regcount,uf):
     ret = 0
@@ -49,19 +45,30 @@ def enc_ra_rb_of_re_i(opcode,opcode2,ra,rb,mem,regcount,uf):
     if rb.bit_length() > 5:
         raise Exception('operand %s out of range 5' % rb)
     ret = ret | (rb << 37)
+    ret = ret | (1 << 30)
+    if mem.bit_length() > 27:
+        raise Exception('operand %s out of range 27' % mem)
+    ret = ret | (mem << 3)
     if regcount.bit_length() > 5:
         raise Exception('operand %s out of range 5' % regcount)
     if regcount == 0:
         raise Exception('negative regcount')
     ret = ret | ((regcount-1) << 32)
-    ret = ret | (1 << 30)
-    if mem.bit_length() > 27:
-        raise Exception('operand %s out of range 27' % mem)
-    ret = ret | (mem << 3)
     if opcode2.bit_length() > 3:
         raise Exception('operand %s out of range 3' % opcode2)
     ret = ret | (opcode2 << 0)
     return (ret,6)
+
+def dec_ra_rb_of_re_i(ins):
+    uf = False
+    opcode = (ins >> 47) & 127
+    ra = (ins >> 42) & 31
+    rb = (ins >> 37) & 31
+    assert ((ins >> 30) & 3) == 1
+    mem = (ins >> 3) & 134217727
+    regcount = (ins >> 32) & 31
+    opcode2 = (ins >> 0) & 7
+    return (opcode,opcode2,ra,rb,mem,regcount,uf,), 6
 
 def enc_ra_rb_of_re_d(opcode,opcode2,ra,rb,mem,regcount,uf):
     ret = 0
@@ -74,31 +81,30 @@ def enc_ra_rb_of_re_d(opcode,opcode2,ra,rb,mem,regcount,uf):
     if rb.bit_length() > 5:
         raise Exception('operand %s out of range 5' % rb)
     ret = ret | (rb << 37)
+    ret = ret | (2 << 30)
+    if mem.bit_length() > 27:
+        raise Exception('operand %s out of range 27' % mem)
+    ret = ret | (mem << 3)
     if regcount.bit_length() > 5:
         raise Exception('operand %s out of range 5' % regcount)
     if regcount == 0:
         raise Exception('negative regcount')
     ret = ret | ((regcount-1) << 32)
-    ret = ret | (2 << 30)
-    if mem.bit_length() > 27:
-        raise Exception('operand %s out of range 27' % mem)
-    ret = ret | (mem << 3)
     if opcode2.bit_length() > 3:
         raise Exception('operand %s out of range 3' % opcode2)
     ret = ret | (opcode2 << 0)
     return (ret,6)
 
-
-def dec_ra_rb_of_re(ins):
+def dec_ra_rb_of_re_d(ins):
     uf = False
     opcode = (ins >> 47) & 127
     ra = (ins >> 42) & 31
     rb = (ins >> 37) & 31
-    regcount = (ins >> 32) & 31
-    adjust = (ins >> 30) & 3
+    assert ((ins >> 30) & 3) == 2
     mem = (ins >> 3) & 134217727
+    regcount = (ins >> 32) & 31
     opcode2 = (ins >> 0) & 7
-    return (opcode,opcode2,ra,rb,regcount,adjust,mem,uf,), 6
+    return (opcode,opcode2,ra,rb,mem,regcount,uf,), 6
 
 def enc_ra_rb_rc(opcode,opcode2,ra,rb,rc,uf):
     ret = 0
@@ -143,8 +149,8 @@ def enc_ra_rb_im(opcode,opcode2,ra,rb,imm,uf):
     if rb.bit_length() > 5:
         raise Exception('operand %s out of range 5' % rb)
     ret = ret | (rb << 10)
-    if imm.bit_length() > 5:
-        raise Exception('operand %s out of range 5' % imm)
+    if imm.bit_length() > 7:
+        raise Exception('operand %s out of range 7' % imm)
     ret = ret | (imm << 3)
     if opcode2.bit_length() > 2:
         raise Exception('operand %s out of range 2' % opcode2)
@@ -159,7 +165,7 @@ def dec_ra_rb_im(ins):
     opcode = (ins >> 20) & 127
     ra = (ins >> 15) & 31
     rb = (ins >> 10) & 31
-    imm = (ins >> 5) & 31
+    imm = (ins >> 3) & 127
     opcode2 = (ins >> 1) & 3
     uf = (ins >> 0) & 1
     return (opcode,opcode2,ra,rb,imm,uf,), 3
@@ -217,10 +223,10 @@ def dec_ra_rb_me(ins):
     opcode = (ins >> 20) & 127
     ra = (ins >> 15) & 31
     rb = (ins >> 10) & 31
-    one = (ins >> 9) & 1
+    assert ((ins >> 9) & 1) == 1
     memoryflags = (ins >> 7) & 3
     opcode2 = (ins >> 0) & 127
-    return (opcode,opcode2,ra,rb,one,memoryflags,uf,), 3
+    return (opcode,opcode2,ra,rb,memoryflags,uf,), 3
 
 def enc_ra_rb_lo_ve_no_fl(opcode,opcode2,ra,rb,uf):
     ret = 0
@@ -270,7 +276,23 @@ def dec_ra_rb_lo_ve_no_fl_al(ins):
     opcode2 = (ins >> 0) & 1023
     return (opcode,opcode2,ra,rb,uf,), 3
 
-def dec_ra_rb_lo_ve_no_fl_al(ins):
+def enc_ra_rb_lo_ve_no_fl_al_tw(opcode,opcode2,ra,rb,uf):
+    ret = 0
+    if opcode.bit_length() > 12:
+        raise Exception('operand %s out of range 12' % opcode)
+    ret = ret | (opcode << 15)
+    if ra.bit_length() > 5:
+        raise Exception('operand %s out of range 5' % ra)
+    ret = ret | (ra << 10)
+    if rb.bit_length() > 5:
+        raise Exception('operand %s out of range 5' % rb)
+    ret = ret | (rb << 5)
+    if opcode2.bit_length() > 5:
+        raise Exception('operand %s out of range 5' % opcode2)
+    ret = ret | (opcode2 << 0)
+    return (ret,3)
+
+def dec_ra_rb_lo_ve_no_fl_al_tw(ins):
     uf = False
     opcode = (ins >> 15) & 4095
     ra = (ins >> 10) & 31
@@ -391,7 +413,7 @@ def enc_ra_wi_fl(opcode,opcode2,ra,uf):
         raise Exception('operand %s out of range 5' % ra)
     ret = ret | (ra << 13)
     if opcode2.bit_length() > 12:
-        raise Exception('operand %s out of range 12' % q)
+        raise Exception('operand %s out of range 12' % opcode2)
     ret = ret | (opcode2 << 1)
     if uf.bit_length() > 1:
         raise Exception('operand %s out of range 1' % uf)
@@ -402,9 +424,9 @@ def dec_ra_wi_fl(ins):
     uf = False
     opcode = (ins >> 18) & 511
     ra = (ins >> 13) & 31
-    q = (ins >> 1) & 4095
+    opcode2 = (ins >> 1) & 4095
     uf = (ins >> 0) & 1
-    return (opcode,ra,q,uf,), 3
+    return (opcode,opcode2,ra,uf,), 3
 
 def enc_co(opcode,condition,offset,uf):
     ret = 0

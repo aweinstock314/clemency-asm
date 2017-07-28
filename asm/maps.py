@@ -2,7 +2,6 @@ from collections import defaultdict
 from packers import *
 
 enc_fun_to_op = {
-    enc_ra_rb: ['ZES', 'ZEW', 'SES', 'SEW'],
     enc_ra_rb_me: ['SMP'], 
     enc_ra_rb_rc: ['AD', 'ADC', 'ADCM', 'ADF', 'ADFM', 'ADM', 'AN', 'ANM', 'DMT', 'DV', 'DVF', 'DVFM', 'DVM', 'DVS', 'DVSM', 'MD', 'MDF', 'MDFM', 'MDM', 'MDS', 'MDSM', 'MU', 'MUF', 'MUFM', 'MUM', 'MUS', 'MUSM', 'OR', 'ORM', 'RL', 'RLM', 'RR', 'RRM', 'SA', 'SAM', 'SB', 'SBC', 'SBCM', 'SBF', 'SBFM', 'SBM', 'SL', 'SLM', 'SR', 'SRM', 'XR', 'XRM'], 
     enc_no_re: ['DBRK', 'HT', 'IR', 'RE', 'WT'], 
@@ -10,9 +9,10 @@ enc_fun_to_op = {
     enc_ra_rb_lo_ve_no_fl: ['FTI', 'FTIM', 'ITF', 'ITFM'], 
     enc_ra_rb_of_re: ['LDS', 'LDT', 'LDW', 'STS', 'STT', 'STW'],
     enc_ra_rb_of_re_i: ['LDSI','LDTI','LDWI','STSI','STTI','STWI'],
-    enc_ra_rb_of_re_d: ['LDSD','LDTD','LDWD','STSD','STTD','STWI'],
+    enc_ra_rb_of_re_d: ['LDSD','LDTD','LDWD','STSD','STTD','STWD'],
     enc_of: ['CAR'], 
     enc_ra_rb_lo_ve_no_fl_al: ['RMP'], 
+    enc_ra_rb_lo_ve_no_fl_al_tw: ['ZES', 'ZEW', 'SES', 'SEW'],
     enc_ra_im_al: ['MH', 'ML', 'MS'], 
     enc_ra_rb_sh_ve: ['CM', 'CMF', 'CMFM', 'CMM'], 
     enc_ra_no_fl: ['DI', 'EI', 'RF', 'SF'], 
