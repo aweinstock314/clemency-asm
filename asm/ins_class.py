@@ -1,6 +1,6 @@
 import itertools
 
-reg_list = ["r%02i"%(i) for i in range(28)] + ["st","ra","pc","fl"]
+reg_list = ["r%02i"%(i) for i in range(29)] + ["st","ra","pc","fl"]
 
 cond2mnem = {
     0b0000: 'n',
@@ -48,9 +48,9 @@ class Imm:
     def __init__(self, value):
         self.value = value
     def __repr__(self):
-        return 'Imm(%r)' % value
+        return 'Imm(%r)' % self.value
     def __str__(self):
-        return str(value)
+        return str(self.value)
     def untyped_repr(self, _):
         return [self.value]
 
@@ -72,11 +72,8 @@ class Ins:
         self.name = name.lower()
         self.uf = uf
         self.ops = ops
-        self.cond = None
-        if self.name in branch_ops:
-            _, self.cond = branch_ops[self.name]
     def __repr__(self):
-        return 'Ins(%r, %r, %r, %r)' % (self.name, self.uf, self.ops, self.cond)
+        return 'Ins(%r, %r, %r)' % (self.name, self.uf, self.ops)
     def __str__(self):
         return '%s%s %s' % (self.name, ('.' if self.uf else ''), ', '.join(map(str, self.ops)))
 

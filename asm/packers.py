@@ -1,4 +1,4 @@
-def enc_ra_rb_of_re(opcode,opcode2,ra,rb,regcount,adjust,mem,uf):
+def enc_ra_rb_of_re(opcode,opcode2,ra,rb,mem,regcount,uf):
     ret = 0
     if opcode.bit_length() > 7:
         raise Exception('operand %s out of range 7' % opcode)
@@ -11,10 +11,7 @@ def enc_ra_rb_of_re(opcode,opcode2,ra,rb,regcount,adjust,mem,uf):
     ret = ret | (rb << 37)
     if regcount.bit_length() > 5:
         raise Exception('operand %s out of range 5' % regcount)
-    ret = ret | (regcount << 32)
-    if adjust.bit_length() > 2:
-        raise Exception('operand %s out of range 2' % adjust)
-    ret = ret | (adjust << 30)
+    ret = ret | ((regcount-1) << 32)
     if mem.bit_length() > 27:
         raise Exception('operand %s out of range 27' % mem)
     ret = ret | (mem << 3)
@@ -79,7 +76,7 @@ def enc_ra_rb_im(opcode,opcode2,ra,rb,imm,uf):
     ret = ret | (rb << 10)
     if imm.bit_length() > 5:
         raise Exception('operand %s out of range 5' % imm)
-    ret = ret | (imm << 5)
+    ret = ret | (imm << 3)
     if opcode2.bit_length() > 2:
         raise Exception('operand %s out of range 2' % opcode2)
     ret = ret | (opcode2 << 1)
@@ -98,7 +95,7 @@ def dec_ra_rb_im(ins):
     uf = (ins >> 0) & 1
     return (opcode,opcode2,ra,rb,imm,uf,), 3
 
-def enc_ra_rb_lo_op(opcode,ra,rb,instruction_specific,uf):
+def enc_ra_rb_lo_op(opcode,opcode2,ra,rb,uf):
     ret = 0
     if opcode.bit_length() > 9:
         raise Exception('operand %s out of range 9' % opcode)
@@ -109,9 +106,9 @@ def enc_ra_rb_lo_op(opcode,ra,rb,instruction_specific,uf):
     if rb.bit_length() > 5:
         raise Exception('operand %s out of range 5' % rb)
     ret = ret | (rb << 8)
-    if instruction_specific.bit_length() > 7:
-        raise Exception('operand %s out of range 7' % instruction_specific)
-    ret = ret | (instruction_specific << 1)
+    if opcode2.bit_length() > 7:
+        raise Exception('operand %s out of range 7' % opcode2)
+    ret = ret | (opcode2 << 1)
     if uf.bit_length() > 1:
         raise Exception('operand %s out of range 1' % uf)
     ret = ret | (uf << 0)
@@ -126,7 +123,7 @@ def dec_ra_rb_lo_op(ins):
     uf = (ins >> 0) & 1
     return (opcode,ra,rb,instruction_specific,uf,), 3
 
-def enc_ra_rb_me(opcode,opcode2,ra,rb,one,memoryflags,uf):
+def enc_ra_rb_me(opcode,opcode2,ra,rb,memoryflags,uf):
     ret = 0
     if opcode.bit_length() > 7:
         raise Exception('operand %s out of range 7' % opcode)
@@ -137,9 +134,7 @@ def enc_ra_rb_me(opcode,opcode2,ra,rb,one,memoryflags,uf):
     if rb.bit_length() > 5:
         raise Exception('operand %s out of range 5' % rb)
     ret = ret | (rb << 10)
-    if one.bit_length() > 1:
-        raise Exception('operand %s out of range 1' % one)
-    ret = ret | (one << 9)
+    ret = ret | (1 << 9)
     if memoryflags.bit_length() > 2:
         raise Exception('operand %s out of range 2' % memoryflags)
     ret = ret | (memoryflags << 7)
@@ -205,22 +200,6 @@ def dec_ra_rb_lo_ve_no_fl_al(ins):
     rb = (ins >> 10) & 31
     opcode2 = (ins >> 0) & 1023
     return (opcode,opcode2,ra,rb,uf,), 3
-
-def enc_ra_rb_lo_ve_no_fl_al(opcode,opcode2,ra,rb,uf):
-    ret = 0
-    if opcode.bit_length() > 12:
-        raise Exception('operand %s out of range 12' % opcode)
-    ret = ret | (opcode << 15)
-    if ra.bit_length() > 5:
-        raise Exception('operand %s out of range 5' % ra)
-    ret = ret | (ra << 10)
-    if rb.bit_length() > 5:
-        raise Exception('operand %s out of range 5' % rb)
-    ret = ret | (rb << 5)
-    if opcode2.bit_length() > 5:
-        raise Exception('operand %s out of range 5' % opcode2)
-    ret = ret | (opcode2 << 0)
-    return (ret,3)
 
 def dec_ra_rb_lo_ve_no_fl_al(ins):
     uf = False
@@ -334,7 +313,7 @@ def dec_ra_no_fl(ins):
     opcode2 = (ins >> 0) & 1
     return (opcode,opcode2,ra,uf,), 2
 
-def enc_ra_wi_fl(opcode,ra,q,uf):
+def enc_ra_wi_fl(opcode,opcode2,ra,uf):
     ret = 0
     if opcode.bit_length() > 9:
         raise Exception('operand %s out of range 9' % opcode)
@@ -342,9 +321,9 @@ def enc_ra_wi_fl(opcode,ra,q,uf):
     if ra.bit_length() > 5:
         raise Exception('operand %s out of range 5' % ra)
     ret = ret | (ra << 13)
-    if q.bit_length() > 12:
+    if opcode2.bit_length() > 12:
         raise Exception('operand %s out of range 12' % q)
-    ret = ret | (q << 1)
+    ret = ret | (opcode2 << 1)
     if uf.bit_length() > 1:
         raise Exception('operand %s out of range 1' % uf)
     ret = ret | (uf << 0)
