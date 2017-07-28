@@ -111,7 +111,7 @@ def assemble(ast, labels):
 
 def binary_encode(ins_list):
     ba_full = bitarray()
-    for ins in output:
+    for ins in ins_list:
         ba_temp = bitarray()
         for nyte in ins:    
     	    ba = bitarray()
