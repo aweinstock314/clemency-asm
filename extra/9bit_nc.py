@@ -5,21 +5,17 @@ import sys
 import time
 
 
+
 def do_interactive(p):
     while 1:
         print "loop start"
         foo = ""
         while p.can_recv():
-            foo = '\n'.join(p.recv().split("\n")[1:])
-            e = ""
-            bar = ""
-            for i in foo:
-                e += i
-                bar = ninebitops.unpack9_to_ascii(e)
-                if bar.endswith("\n"):
-                    e = ""
-                    print bar
-            print bar
+            foo = p.recv()
+            bar = ninebitops.unpack9_to_ascii(foo)
+            print bar.split('\n')[0]
+            for i in xrange(1, len(bar.split('\n'))):
+                print ninebitops.unpack9_to_ascii(foo[len(bar.split('\n')[i]) + (54*i):])
 
         buf = sys.stdin.read()
 
@@ -44,5 +40,5 @@ pargs.add_argument(
 pargs = pargs.parse_args()
 
 p = remote(pargs.ip, pargs.port)
-
+time.sleep(2)
 do_interactive(p)
