@@ -62,3 +62,22 @@ def unpack9_to_int_list(x):
 
     return newbytes_ints
 
+def swap_endianess(data_as_int, width):
+    '''
+    Swaps between middle endian byte order and big endian for ints
+    '''
+
+    if data_as_int >= 0x8000000:
+        raise Exception("Value larger than 27-bit value")
+    if width == 3:
+        return (((data_as_int >> 18) & 0x1ff) << 9) | (((data_as_int >> 9) & 0x1ff) << 18) | (data_as_int & 0x1ff)
+    elif width == 2:
+        if data_as_int > 0x3ffff:
+            raise Exception("Value larger than 18-bit value")
+        return (data_as_int >> 9) | ((data_as_int & 0x1ff) << 9)
+    elif width == 1:
+        if data_as_int > 0x1ff:
+            raise Exception("Value larger than 9-bit value")
+        return data_as_int
+    else:
+        raise Exception("Invalid width for endianess swap")
