@@ -10,10 +10,16 @@ def do_interactive(p):
         print "loop start"
         foo = ""
         while p.can_recv():
-            foo = p.recv()
-            bar = ninebitops.unpack9_to_ascii(foo)
+            foo = '\n'.join(p.recv().split("\n")[1:])
+            e = ""
+            bar = ""
+            for i in foo:
+                e += i
+                bar = ninebitops.unpack9_to_ascii(e)
+                if bar.endswith("\n"):
+                    e = ""
+                    print bar
             print bar
-            print bar.encode("hex")
 
         buf = sys.stdin.read()
 
@@ -38,9 +44,5 @@ pargs.add_argument(
 pargs = pargs.parse_args()
 
 p = remote(pargs.ip, pargs.port)
-
-time.sleep(2)
-do_interactive(p)
-
 
 

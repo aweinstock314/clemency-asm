@@ -76,10 +76,10 @@ def assemble(ast, labels):
     def do_pass(data):
         values = []
         sizes = []
-        for instr in ast:
+        for (i, instr) in enumerate(ast):
             processed_ops = []
             for op in instr.ops:
-                processed_ops.extend(op.untyped_repr(data))
+                processed_ops.extend(op.untyped_repr((data, i)))
             processed_ops.append(instr.uf)
 
             name = instr.name.lower()
