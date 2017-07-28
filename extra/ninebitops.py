@@ -1,3 +1,5 @@
+import bitstring
+
 def pack9(x):
     bits = []
     if len(x) % 9 != 0:
@@ -15,41 +17,27 @@ def pack9(x):
     return "".join(bytes)
 
 def unpack9_to_ascii(x):
-    bytes=x
 
-    newbytes = []
+    newbytes_ints = unpack9_to_int_list(x)
+    ascii_data = ""
 
-    # Take 72 bits and split into 8 bytes
-    # This assumes that the top bit is never set (e.g. for text maybe?)
-    for i in range((len(bytes)/9) + 1):
-        seg = bytes[i*9:(i+1)*9]
-        binary = []
-        # Build long binary string
-        for b in seg:
-            binary.append("{:08b}".format(ord(b)))
-        binary = "".join(binary)
-        # Slice into 9 bit ints
-        for j in range(len(binary)/9):
-            byte = binary[j*9:(j+1)*9]
-            val = int(byte, 2)
-            if val < 256:
-                newbytes.append(chr(val))
-            else:
-                raise Exception("Non-ascii 9-bit byte value: %x" % val)
-            # newbytes.append(val)
+    for i in newbytes_ints:
+        if i < 128:
+            ascii_data += chr(i)
+        #else:
+        #    raise Exception("Non-ascii 9-bit byte value: %x" % val)
 
-    return newbytes_ints
+    return ascii_data
 
 def unpack9_to_int_list(x):
-    bytes=x
+    bits = bitstring.BitArray(bytes=x)
 
     newbytes_ints = []
 
-    # Take 72 bits and split into 8 bytes
-    # This assumes that the top bit is never set (e.g. for text maybe?)
-    for i in range((len(bytes)/9) + 1):
-        seg = bytes[i*9:(i+1)*9]
-        binary = []
+    #binary = []
+    for i in xrange(0, len(bits) - 9, 9):
+        seg = bits[i:i+9]
+        '''
         # Build long binary string
         for b in seg:
             binary.append("{:08b}".format(ord(b)))
@@ -59,6 +47,8 @@ def unpack9_to_int_list(x):
             byte = binary[j*9:(j+1)*9]
             val = int(byte, 2)
             newbytes_ints.append(val)
+        '''
+        newbytes_ints.append(seg.uint)
 
     return newbytes_ints
 
