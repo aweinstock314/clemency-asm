@@ -87,13 +87,14 @@ class Label:
         return 'Label(%r)' % self.name
     def __str__(self):
         return '&%s' % (self.name,)
-    def untyped_repr(self, data):
+    def untyped_repr(self, (data, i)):
         if not data:
             return [0]
         labels, sizes = data
         print('labels: %r' % labels)
         print('sizes: %r' % sizes)
-        cumulative_sizes = []
+        print('i: %r' % i)
+        cumulative_sizes = [0]
         total = 0
         for size in sizes:
             total += size
@@ -101,7 +102,12 @@ class Label:
         print('cumulative_sizes: %r' % cumulative_sizes)
         # TODO: sanity check correctness for absolute/relative
         # note: it's probably user error to use jump absolute with a label (since labels are pc-relative)
-        return [cumulative_sizes[labels[self.name]-1]]
+        print cumulative_sizes[i]
+        print cumulative_sizes[labels[self.name]]
+        relative = cumulative_sizes[labels[self.name]] - cumulative_sizes[i]
+        print('relative: %r' % relative)
+        unsigned_relative = relative & ((1 << (27-10))-1)
+        return [unsigned_relative]
 
 class MemoryFlags:
     def __init__(self, value):
