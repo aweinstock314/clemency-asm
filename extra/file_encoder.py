@@ -20,7 +20,7 @@ class ByteStream(object):
 
     num_bits_left = 9 - num_new_bits
     if num_bits_left == 8:
-      stream += chr(new_byte >> 1)
+      stream += chr(new_byte)
       new_current_num_bits = 0
       new_current_byte = 0
     else:
