@@ -3,6 +3,7 @@ import argparse
 import ninebitops
 import sys
 import time
+import select
 
 
 
@@ -16,27 +17,15 @@ def do_interactive(p):
         #print "loop start"
         foo = ""
         while p.can_recv():
-            foo = p.recv()
-            bar = ninebitops.unpack9_to_ascii(foo)
+            bit9 = p.recv()
+            bit8 = ninebitops.unpack_multiple_lines(bit9)
+            #bar = ninebitops.unpack9_to_ascii(foo)
+            print bit8,
 
-            d = ""
-            e = ""
-            l = ""
-            for i in foo:
-                e += i
-                d = ninebitops.unpack9_to_ascii(e)
-                if is_ascii(d):
-                    l = d
-                else:
-                    if not l == "":
-                        print l
-                    e = ""
-                    d = ""
-
-        buf = raw_input()
-        string = ninebitops.pack9_to_ascii(buf) 
-        p.send(string)
-        time.sleep(1)
+        if len(select.select([sys.stdin],[],[],.1)[0])>0:
+            buf = raw_input()
+            string = ninebitops.pack9_to_ascii(buf) 
+            p.send(string)
 
 pargs = argparse.ArgumentParser()
 
@@ -56,5 +45,4 @@ pargs.add_argument(
 pargs = pargs.parse_args()
 
 p = remote(pargs.ip, pargs.port)
-time.sleep(2)
 do_interactive(p)
