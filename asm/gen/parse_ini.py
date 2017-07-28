@@ -20,13 +20,25 @@ for line in f:
     #print arg_pos
     #print arg_name
     le = int(arg_pos[-1])
-    print "def {}({}):".format(name.lower(),','.join(arg_name))
+    sorted_names = list(arg_name)
+    if 'opcode2' in sorted_names:
+        sorted_names.remove('opcode2')
+        sorted_names.insert(1, 'opcode2')
+    if not 'uf' in sorted_names:
+        sorted_names.append('uf')
+    print "def enc_{}({}):".format(name.lower(),','.join(sorted_names))
     print "    ret = 0"
     for i,j in enumerate(arg_pos):
-        print "    if len(bin({})[2:]) > {}:".format(arg_name[i],j - arg_start_pos[i] + 1)
-        print "        return None"
+        print "    if {}.bit_length() > {}:".format(arg_name[i],j - arg_start_pos[i] + 1)
+        print "        raise Exception('operand %s out of range {}' % {})".format(j - arg_start_pos[i] + 1, arg_name[i])
         print "    ret = ret | (" + str(arg_name[i]) + " << " + str(le - j) + ")"
     print "    return (ret,{})".format((le/9)+1)
+    print
+    print "def dec_{}(ins):".format(name.lower())
+    print "    uf = False"
+    for i, j in enumerate(arg_pos):
+        print "    {} = (ins >> {}) & {}".format(arg_name[i], le - j, (1 << (j - arg_start_pos[i] + 1)) - 1)
+    print "    return ({},), {}".format(','.join(sorted_names), (le/9)+1)
     print
 
     #print lines[1].split(",")

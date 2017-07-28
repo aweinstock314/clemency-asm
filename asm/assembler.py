@@ -5,7 +5,7 @@ import re
 import sys
 
 def encode(opcode, args):
-    return op_to_fun[opcode](*(op_bits[opcode] + args))
+    return enc_op_to_fun[opcode](*(op_bits[opcode] + args))
 
 class ParseException:
     def __init__(self, line, lineno, msg):
@@ -74,6 +74,8 @@ def assemble(ast, labels):
             processed_ops = [instr.cond] + processed_ops
         else:
             name = instr.name
+
+        print processed_ops
         # print name
         (_, size) = encode(name.upper(), processed_ops)
         sizes.append(size)

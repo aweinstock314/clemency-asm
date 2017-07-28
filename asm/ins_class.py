@@ -64,7 +64,8 @@ class Mem:
     def __str__(self):
         return '[%s + %#x, %d]' % (self.reg, self.offset, self.regcount)
     def untyped_repr(self, labels):
-        return [self.reg.untyped_repr(labels), self.offset, self.regcount]
+        print 'mem', self.reg.untyped_repr(labels) + [self.offset, self.regcount]
+        return self.reg.untyped_repr(labels) + [self.offset, self.regcount]
 
 class Ins:
     def __init__(self, name, uf, ops):

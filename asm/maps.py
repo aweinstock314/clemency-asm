@@ -1,30 +1,55 @@
 from collections import defaultdict
 from packers import *
 
-fun_to_op = {
-    ra_rb_me: ['SMP'], 
-    ra_rb_rc: ['AD', 'ADC', 'ADCM', 'ADF', 'ADFM', 'ADM', 'AN', 'ANM', 'DMT', 'DV', 'DVF', 'DVFM', 'DVM', 'DVS', 'DVSM', 'MD', 'MDF', 'MDFM', 'MDM', 'MDS', 'MDSM', 'MU', 'MUF', 'MUFM', 'MUM', 'MUS', 'MUSM', 'OR', 'ORM', 'RL', 'RLM', 'RR', 'RRM', 'SA', 'SAM', 'SB', 'SBC', 'SBCM', 'SBF', 'SBFM', 'SBM', 'SL', 'SLM', 'SR', 'SRM', 'XR', 'XRM'], 
-    no_re: ['DBRK', 'HT', 'IR', 'RE', 'WT'], 
-    co_ra: ['BR', 'CR'], 
-    ra_rb_lo_ve_no_fl: ['FTI', 'FTIM', 'ITF', 'ITFM'], 
-    ra_rb_of_re: ['LDS', 'LDT', 'LDW', 'STS', 'STT', 'STW'], 
-    of: ['CAR'], 
-    ra_rb_lo_ve_no_fl_al: ['RMP', 'SES', 'SEW', 'ZES', 'ZEW'], 
-    ra_im_al: ['MH', 'ML', 'MS'], 
-    ra_rb_sh_ve: ['CM', 'CMF', 'CMFM', 'CMM'], 
-    ra_no_fl: ['DI', 'EI', 'RF', 'SF'], 
-    lo: ['BRA', 'BRR', 'CAA'], 
-    co: ['B', 'C'], 
-    ra_rb_lo_op: ['BF', 'BFM', 'NG', 'NGF', 'NGFM', 'NGM', 'NT', 'NTM'], 
-    ra_wi_fl: ['RND', 'RNDM'], 
-    ra_im: ['CMI', 'CMIM'], 
-    ra_rb_im: ['ADCI', 'ADCIM', 'ADI', 'ADIM', 'ANI', 'DVI', 'DVIM', 'DVIS', 'DVISM', 'MDI', 'MDIM', 'MDIS', 'MDISM', 'MUI', 'MUIM', 'MUIS', 'MUISM', 'ORI', 'RLI', 'RLIM', 'RRI', 'RRIM', 'SAI', 'SAIM', 'SBCI', 'SBCIM', 'SBI. SBIM', 'SLI', 'SLIM', 'SRI', 'SRIM', 'XRI'],
+enc_fun_to_op = {
+    enc_ra_rb_me: ['SMP'], 
+    enc_ra_rb_rc: ['AD', 'ADC', 'ADCM', 'ADF', 'ADFM', 'ADM', 'AN', 'ANM', 'DMT', 'DV', 'DVF', 'DVFM', 'DVM', 'DVS', 'DVSM', 'MD', 'MDF', 'MDFM', 'MDM', 'MDS', 'MDSM', 'MU', 'MUF', 'MUFM', 'MUM', 'MUS', 'MUSM', 'OR', 'ORM', 'RL', 'RLM', 'RR', 'RRM', 'SA', 'SAM', 'SB', 'SBC', 'SBCM', 'SBF', 'SBFM', 'SBM', 'SL', 'SLM', 'SR', 'SRM', 'XR', 'XRM'], 
+    enc_no_re: ['DBRK', 'HT', 'IR', 'RE', 'WT'], 
+    enc_co_ra: ['BR', 'CR'], 
+    enc_ra_rb_lo_ve_no_fl: ['FTI', 'FTIM', 'ITF', 'ITFM'], 
+    enc_ra_rb_of_re: ['LDS', 'LDT', 'LDW', 'STS', 'STT', 'STW'], 
+    enc_of: ['CAR'], 
+    enc_ra_rb_lo_ve_no_fl_al: ['RMP', 'SES', 'SEW', 'ZES', 'ZEW'], 
+    enc_ra_im_al: ['MH', 'ML', 'MS'], 
+    enc_ra_rb_sh_ve: ['CM', 'CMF', 'CMFM', 'CMM'], 
+    enc_ra_no_fl: ['DI', 'EI', 'RF', 'SF'], 
+    enc_lo: ['BRA', 'BRR', 'CAA'], 
+    enc_co: ['B', 'C'], 
+    enc_ra_rb_lo_op: ['BF', 'BFM', 'NG', 'NGF', 'NGFM', 'NGM', 'NT', 'NTM'], 
+    enc_ra_wi_fl: ['RND', 'RNDM'], 
+    enc_ra_im: ['CMI', 'CMIM'], 
+    enc_ra_rb_im: ['ADCI', 'ADCIM', 'ADI', 'ADIM', 'ANI', 'DVI', 'DVIM', 'DVIS', 'DVISM', 'MDI', 'MDIM', 'MDIS', 'MDISM', 'MUI', 'MUIM', 'MUIS', 'MUISM', 'ORI', 'RLI', 'RLIM', 'RRI', 'RRIM', 'SAI', 'SAIM', 'SBCI', 'SBCIM', 'SBI. SBIM', 'SLI', 'SLIM', 'SRI', 'SRIM', 'XRI'],
 }
 
-op_to_fun = {}
-for fun, ops in fun_to_op.items():
+enc_op_to_fun = {}
+for fun, ops in enc_fun_to_op.items():
     for op in ops:
-        op_to_fun[op] = fun
+        enc_op_to_fun[op] = fun
+
+dec_fun_to_op = {
+    dec_ra_rb_me: ['SMP'], 
+    dec_ra_rb_rc: ['AD', 'ADC', 'ADCM', 'ADF', 'ADFM', 'ADM', 'AN', 'ANM', 'DMT', 'DV', 'DVF', 'DVFM', 'DVM', 'DVS', 'DVSM', 'MD', 'MDF', 'MDFM', 'MDM', 'MDS', 'MDSM', 'MU', 'MUF', 'MUFM', 'MUM', 'MUS', 'MUSM', 'OR', 'ORM', 'RL', 'RLM', 'RR', 'RRM', 'SA', 'SAM', 'SB', 'SBC', 'SBCM', 'SBF', 'SBFM', 'SBM', 'SL', 'SLM', 'SR', 'SRM', 'XR', 'XRM'], 
+    dec_no_re: ['DBRK', 'HT', 'IR', 'RE', 'WT'], 
+    dec_co_ra: ['BR', 'CR'], 
+    dec_ra_rb_lo_ve_no_fl: ['FTI', 'FTIM', 'ITF', 'ITFM'], 
+    dec_ra_rb_of_re: ['LDS', 'LDT', 'LDW', 'STS', 'STT', 'STW'], 
+    dec_of: ['CAR'], 
+    dec_ra_rb_lo_ve_no_fl_al: ['RMP', 'SES', 'SEW', 'ZES', 'ZEW'], 
+    dec_ra_im_al: ['MH', 'ML', 'MS'], 
+    dec_ra_rb_sh_ve: ['CM', 'CMF', 'CMFM', 'CMM'], 
+    dec_ra_no_fl: ['DI', 'EI', 'RF', 'SF'], 
+    dec_lo: ['BRA', 'BRR', 'CAA'], 
+    dec_co: ['B', 'C'], 
+    dec_ra_rb_lo_op: ['BF', 'BFM', 'NG', 'NGF', 'NGFM', 'NGM', 'NT', 'NTM'], 
+    dec_ra_wi_fl: ['RND', 'RNDM'], 
+    dec_ra_im: ['CMI', 'CMIM'], 
+    dec_ra_rb_im: ['ADCI', 'ADCIM', 'ADI', 'ADIM', 'ANI', 'DVI', 'DVIM', 'DVIS', 'DVISM', 'MDI', 'MDIM', 'MDIS', 'MDISM', 'MUI', 'MUIM', 'MUIS', 'MUISM', 'ORI', 'RLI', 'RLIM', 'RRI', 'RRIM', 'SAI', 'SAIM', 'SBCI', 'SBCIM', 'SBI. SBIM', 'SLI', 'SLIM', 'SRI', 'SRIM', 'XRI'],
+}
+
+dec_op_to_fun = {}
+for fun, ops in dec_fun_to_op.items():
+    for op in ops:
+        dec_op_to_fun[op] = fun
 
 op_bits = {
     'AD':[0b000000,0b0000],
