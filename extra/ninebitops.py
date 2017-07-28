@@ -1,4 +1,6 @@
 import bitstring
+import string
+import math
 
 def pack9_to_ascii(x):
     """
@@ -154,20 +156,49 @@ def ascii_score(s):
     for c in s:
         if c < 128:
             c = chr(c)
-            if c in string.ascii_letters+string.digits+' .:>,!\n':
+            if c in string.printable:
                 score+=1
-            elif c in string.printable:
-                score+=.2
     return score
 
-#def strr(y):
-#    if type(y) == list:
-#        return ''.join(repr(chr(x))[1:-1] if x<127 else '?' for x in y)
-#    else:
-#        return repr(chr(y))[1:-1] if y<127 else '?'
+def strr(y):
+    if type(y) == list:
+        return ''.join(repr(chr(x))[1:-1] if x<127 else '?' for x in y)
+    else:
+        return repr(chr(y))[1:-1] if y<127 else '?'
 
-def unpack_multiple_lines(bit9,depth=0):
-    bit8 = ninebitops.unpack9_to_int_list(bit9)
+def unpack_multiple_lines(bit9):
+    """
+    Used to unpack multiple lines seperated by new lines.
+    Does not work if new lines are not used between flushes...
+    """
+    bit8 = unpack9_to_int_list(bit9)
+
+    out = bit8[:1]
+    i = 1
+    while i < len(bit8):
+
+        edge = int(math.ceil((i*9)/8.0))
+        if bit8[i-1] == 10 and ((ord(bit9[edge-1])&(0xff >> ((i*9)%8))) == 0):
+            bit8_edge = unpack9_to_int_list(bit9[edge:])
+            #print "Switch"
+            #print i,i*9,(i*9)%8
+            #print bit9[edge-3:edge+1].encode('hex')
+            #raw_input()
+            bit8 = bit8_edge
+            bit9 = bit9[edge:]
+            i = 0
+        out.append(bit8[i])
+        i += 1
+    return ''.join(chr(x) if x<127 else '?' for x in out)
+        
+
+
+def unpack_multiple_slow(bit9,depth=0):
+    """
+    Brute force the best way to unpack multiple flushes in on string.
+    Very slow for even slightly long strings...
+    """
+    bit8 = unpack9_to_int_list(bit9)
 
     splits = []
 
@@ -177,13 +208,14 @@ def unpack_multiple_lines(bit9,depth=0):
         edge = int(math.ceil((i*9)/8.0))
         
         #print '--'*depth,'edge=',edge*8,'ind',(i*9)
-        bit8_edge = ninebitops.unpack9_to_int_list(bit9[edge:])
+        bit8_edge = unpack9_to_int_list(bit9[edge:])
         score_edge = ascii_score(bit8_edge)
         #print '--'*depth,'index',i,'char',strr(bit8[i])
         #print '--'*depth,'normal',strr(bit8[i:]),len(bit8[i:])
         #print '--'*depth,'edge',strr(bit8_edge),len(bit8_edge)
         #print '--'*depth,'scores:',score_normal, score_edge, (i*9)%8
-        if score_edge > score_normal and ((ord(bit9[edge-1])&(0xff >> ((i*9)%8))) == 0):
+        if (depth < 4 and 
+                score_edge > score_normal and ((ord(bit9[edge-1])&(0xff >> ((i*9)%8))) == 0)):
             # Check if we can actually get better
             bestedge = unpack_multiple_lines(bit9[edge:],depth+1)
             #print '--'*depth,'Best',strr(bestedge)
