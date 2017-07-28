@@ -1,8 +1,11 @@
 #!/usr/bin/env python2
+from maps import *
 from ins_class import *
-import exporter
 import re
 import sys
+
+def encode(opcode, args):
+    return op_to_fun[opcode](*(op_bits[opcode] + args))
 
 class ParseException:
     def __init__(self, line, lineno, msg):
@@ -72,7 +75,7 @@ def assemble(ast, labels):
         else:
             name = instr.name
         # print name
-        (_, size) = exporter.export(name.upper(), map(str, processed_ops))
+        (_, size) = encode(name.upper(), processed_ops)
         sizes.append(size)
 
     #print(sizes)
@@ -90,7 +93,7 @@ def assemble(ast, labels):
         else:
             name = instr.name
         # print name
-        (value, _) = exporter.export(name.upper(), map(str, processed_ops))
+        (value, _) = encode(name.upper(), processed_ops)
         values.append(value)
 
     # print(values)
