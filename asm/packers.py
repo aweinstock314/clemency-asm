@@ -166,9 +166,9 @@ def dec_ra_rb_lo_op(ins):
     opcode = (ins >> 18) & 511
     ra = (ins >> 13) & 31
     rb = (ins >> 8) & 31
-    instruction_specific = (ins >> 1) & 127
+    opcode2 = (ins >> 1) & 127
     uf = (ins >> 0) & 1
-    return (opcode,ra,rb,instruction_specific,uf,), 3
+    return (opcode,opcode2,ra,rb,uf,), 3
 
 def enc_ra_rb_me(opcode,opcode2,ra,rb,memoryflags,uf):
     ret = 0
