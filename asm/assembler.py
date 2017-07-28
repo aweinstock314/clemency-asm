@@ -17,7 +17,8 @@ class ParseException:
     def __repr__(self):
         return 'ParseException on line %d: %s\n%r\n' % (self.lineno, self.msg, self.line)
 
-LITERAL_REGEX = '(0b[01]+|0x[0-9a-fA-F]+|\d+)'
+MP_MODES = ['n','r','rw','e']
+LITERAL_REGEX = '\+?(0b[01]+|0x[0-9a-fA-F]+|\d+)'
 MEMORY_REGEX = r'^\[(r[0-9]+|pc|st|ra|fl)\s*\+\s*'+LITERAL_REGEX+',\s*'+LITERAL_REGEX+'\]$' # TODO: hex/bin offsets?
 
 def parse(source):
@@ -51,6 +52,9 @@ def parse(source):
                     ops.append(Mem(reg, offset, regcount))
                 elif op in ['pc', 'st', 'ra', 'fl']:
                     ops.append(Reg(op))
+		elif op in MP_MODES:
+		    lit = MP_MODES.index(op)
+		    ops.append(Imm(lit))
                 elif re.match('^r[0-9]+$', op):
                     ops.append(Reg(op))
                 elif re.match(r'^'+LITERAL_REGEX+'$', op):
