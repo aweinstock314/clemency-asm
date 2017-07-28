@@ -7,7 +7,9 @@ import sys
 import struct
 
 def encode(opcode, args):
-    return enc_op_to_fun[opcode](*(op_bits[opcode] + args))
+    tmp = (op_bits[opcode] + args)
+    print opcode, args, tmp
+    return enc_op_to_fun[opcode](*tmp)
 
 class ParseException:
     def __init__(self, line, lineno, msg):
