@@ -24,13 +24,13 @@ def pack9_to_bytes(data):
 
     bits = None
     for tup in data:
-        width = tup[1]
-        val = tup[2]
+        width = tup[0]
+        val = tup[1]
         val = swap_endianness(val, width)
         if bits is None:
-            bits = bitstring.BitArray(val)
+            bits = bitstring.BitArray(uint=val, length=9*width)
         else:
-            bits += bitstring.BitArray(val)
+            bits += bitstring.BitArray(uint=val, length=9*width)
     return bits.tobytes()
 
 def unpack9_to_ascii(x):
