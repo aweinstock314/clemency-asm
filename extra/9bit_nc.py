@@ -18,8 +18,7 @@ def do_interactive(p):
                 print ninebitops.unpack9_to_ascii(foo[len(bar.split('\n')[i]) + (54*i):])
 
         buf = sys.stdin.read()
-
-        string = ninebitops.pack9_ascii(string) 
+        string = ninebitops.pack9_ascii(buf) 
         p.send(string)
 
 pargs = argparse.ArgumentParser()
