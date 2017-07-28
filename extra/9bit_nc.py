@@ -6,16 +6,32 @@ import time
 
 
 
+def is_ascii(s):
+    return all((ord(c) < 128 and ord(c) > 31) for c in s)
+
+
+
 def do_interactive(p):
     while 1:
-        print "loop start"
+        #print "loop start"
         foo = ""
         while p.can_recv():
             foo = p.recv()
             bar = ninebitops.unpack9_to_ascii(foo)
-            print bar.split('\n')[0]
-            for i in xrange(1, len(bar.split('\n'))):
-                print ninebitops.unpack9_to_ascii(foo[len(bar.split('\n')[i]) + (54*i):])
+
+            d = ""
+            e = ""
+            l = ""
+            for i in foo:
+                e += i
+                d = ninebitops.unpack9_to_ascii(e)
+                if is_ascii(d):
+                    l = d
+                else:
+                    if not l == "":
+                        print l
+                    e = ""
+                    d = ""
 
         buf = raw_input()
         string = ninebitops.pack9_to_ascii(buf) 
