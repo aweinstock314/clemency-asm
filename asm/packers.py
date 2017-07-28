@@ -79,7 +79,7 @@ def enc_ra_rb_im(opcode,opcode2,ra,rb,imm,uf):
     ret = ret | (rb << 10)
     if imm.bit_length() > 5:
         raise Exception('operand %s out of range 5' % imm)
-    ret = ret | (imm << 5)
+    ret = ret | (imm << 3)
     if opcode2.bit_length() > 2:
         raise Exception('operand %s out of range 2' % opcode2)
     ret = ret | (opcode2 << 1)
