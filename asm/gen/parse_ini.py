@@ -21,7 +21,6 @@ for line in f:
     #print arg_name
     le = int(arg_pos[-1])
     print "def {}({}):".format(name.lower(),','.join(arg_name))
-    print
     print "    ret = 0"
     for i,j in enumerate(arg_pos):
         print "    if len(bin({})[2:]) > {}:".format(arg_name[i],j - arg_start_pos[i] + 1)

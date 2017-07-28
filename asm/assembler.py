@@ -71,7 +71,7 @@ def assemble(ast, labels):
             processed_ops = [instr.cond] + processed_ops
         else:
             name = instr.name
-        print name
+        # print name
         (_, size) = exporter.export(name.upper(), map(str, processed_ops))
         sizes.append(size)
 
@@ -89,11 +89,11 @@ def assemble(ast, labels):
             processed_ops = [instr.cond] + processed_ops
         else:
             name = instr.name
-        print name
+        # print name
         (value, _) = exporter.export(name.upper(), map(str, processed_ops))
         values.append(value)
 
-    print(values)
+    # print(values)
 
     outputs = []
     for (value, size) in zip(values, sizes):
@@ -102,7 +102,7 @@ def assemble(ast, labels):
         nytes[0], nytes[1] = nytes[1], nytes[0] # TODO: any 1-nyte instructions?
         outputs += nytes
 
-    print(outputs)
+    # print(outputs)
     return outputs
 
 def tests():
