@@ -17,7 +17,7 @@ class ParseException:
     def __repr__(self):
         return 'ParseException on line %d: %s\n%r\n' % (self.lineno, self.msg, self.line)
 
-MP_MODES = ['n','r','rw','rx']
+MP_MODES = ['n','r','rw','e']
 LITERAL_REGEX = '\+?(0b[01]+|0x[0-9a-fA-F]+|\d+)'
 MEMORY_REGEX = r'^\[(r[0-9]+|pc|st|ra|fl)\s*\+\s*'+LITERAL_REGEX+',\s*'+LITERAL_REGEX+'\]$' # TODO: hex/bin offsets?
 
