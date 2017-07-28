@@ -21,11 +21,8 @@ for line in f:
     #print args
     #print arg_pos
     #print arg_name
-    le = int(arg_pos[-1])
+    le = max(map(int, arg_pos))
     sorted_names = list(arg_name)
-    if 'opcode2' in sorted_names:
-        sorted_names.remove('opcode2')
-        sorted_names.insert(1, 'opcode2')
     if not 'uf' in sorted_names:
         sorted_names.append('uf')
     for k in CONSTS:
@@ -36,7 +33,7 @@ for line in f:
     for i,j in enumerate(arg_pos):
         if arg_name[i] not in CONSTS:
             val = str(arg_name[i])
-            print "    if {}.bit_length() > {}:".format(arg_name[i],j - arg_start_pos[i] + 1)
+            print "    if {}.bit_length() > {}:".format(arg_name[i], j - arg_start_pos[i] + 1)
             print "        raise Exception('operand %s out of range {}' % {})".format(j - arg_start_pos[i] + 1, arg_name[i])
             if val == 'regcount':
                 val = '(regcount-1)'

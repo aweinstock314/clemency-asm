@@ -1,31 +1,31 @@
-rA, rB, Offset, RegCount [0-6 Opcode][7-11 rA][12-16 rB][22-23 zero][24-50 Mem Offset][17-21 RegCount][51-53 Opcode2]
+rA, rB, Offset, RegCount [0-6 Opcode][51-53 Opcode2][7-11 rA][12-16 rB][22-23 zero][24-50 Mem Offset][17-21 RegCount]
 LDS, LDT, LDW, STS, STT, STW
 
-rA, rB, Offset, RegCount, i [0-6 Opcode][7-11 rA][12-16 rB][22-23 one][24-50 Mem Offset][17-21 RegCount][51-53 Opcode2]
+rA, rB, Offset, RegCount, i [0-6 Opcode][51-53 Opcode2][7-11 rA][12-16 rB][22-23 one][24-50 Mem Offset][17-21 RegCount]
 LDSI, LDTI, LDWI, STSI, STTI, STWI
 
-rA, rB, Offset, RegCount, d [0-6 Opcode][7-11 rA][12-16 rB][22-23 two][24-50 Mem Offset][17-21 RegCount][51-53 Opcode2]
+rA, rB, Offset, RegCount, d [0-6 Opcode][51-53 Opcode2][7-11 rA][12-16 rB][22-23 two][24-50 Mem Offset][17-21 RegCount]
 LDSD, LDTD, LDWD, STSD, STTD, STWD
 
-rA, rB, rC [0-6 Opcode][7-11 rA][12-16 rB][17-21 rC][22-25 Opcode2][26 UF]
+rA, rB, rC [0-6 Opcode][22-25 Opcode2][7-11 rA][12-16 rB][17-21 rC][26 UF]
 AD, ADC, ADCM, ADF, ADFM, ADM, AN, ANM, DMT, DV, DVF, DVFM, DVM, DVS, DVSM, MD, MDF, MDFM, MDM, MDS, MDSM, MU, MUF, MUFM, MUM, MUS, MUSM, OR, ORM, RL, RLM, RR, RRM, SA, SAM, SB, SBC, SBCM, SBF, SBFM, SBM, SL, SLM, SR, SRM, XR, XRM
 
-rA, rB, IMM [0-6 Opcode][7-11 rA][12-16 rB][17-23 Imm][24-25 Opcode2][26 UF]
+rA, rB, IMM [0-6 Opcode][24-25 Opcode2][7-11 rA][12-16 rB][17-23 Imm][26 UF]
 ADCI, ADCIM, ADI, ADIM, ANI, DVI, DVIM, DVIS, DVISM, MDI, MDIM, MDIS, MDISM, MUI, MUIM, MUIS, MUISM, ORI, RLI, RLIM, RRI, RRIM, SAI, SAIM, SBCI, SBCIM, SBI, SBIM, SLI, SLIM, SRI, SRIM, XRI
 
-rA, rB Logical Operation [0-8 Opcode][9-13 rA][14-18 rB][19-25 Opcode2][26 UF]
+rA, rB Logical Operation [0-8 Opcode][19-25 Opcode2][9-13 rA][14-18 rB][26 UF]
 BF, BFM, NG, NGF, NGFM, NGM, NT, NTM
 
-rA, rB, MemoryFlags [0-6 Opcode][7-11 rA][12-16 rB][17 one][18-19 MemoryFlags][20-26 Opcode2]
+rA, rB, MemoryFlags [0-6 Opcode][20-26 Opcode2][7-11 rA][12-16 rB][17 one][18-19 MemoryFlags]
 SMP
 
-rA, rB long version no flag [0-8 Opcode][9-13 rA][14-18 rB][19-26 Opcode2]
+rA, rB long version no flag [0-8 Opcode][19-26 Opcode2][9-13 rA][14-18 rB]
 FTI, FTIM, ITF, ITFM
 
-rA, rB long version no flag alt [0-6 Opcode][7-11 rA][12-16 rB][17-26 Opcode2]
+rA, rB long version no flag alt [0-6 Opcode][17-26 Opcode2][7-11 rA][12-16 rB]
 RMP
 
-ra, rB long version not flag alt two [0-11 Opcode][12-16 rA][17-21 rB][22-26 Opcode2]
+ra, rB long version not flag alt two [0-11 Opcode][22-26 Opcode2][12-16 rA][17-21 rB]
 SES, SEW, ZES, ZEW
 
 rA, rB short version [0-7 Opcode][8-12 rA][13-17 rB]
@@ -37,13 +37,13 @@ CMI, CMIM
 rA, Imm alternate [0-4 Opcode][5-9 rA][10-26 Imm]
 MH, ML, MS
 
-Condition rA [0-5 Opcode][6-9 Condition][10-14 rA][14-17 Opcode2]
+Condition rA [0-5 Opcode][14-17 Opcode2][6-9 Condition][10-14 rA]
 BR, CR
 
-rA no flag [0-11 Opcode][12-16 rA][17 Opcode2]
+rA no flag [0-11 Opcode][17 Opcode2][12-16 rA]
 DI, EI, RF, SF
 
-rA with flag [0-8 Opcode][9-13 rA][14-25 Opcode2][26 UF]
+rA with flag [0-8 Opcode][14-25 Opcode2][9-13 rA][26 UF]
 RND, RNDM
 
 Condition/Offset [0-5 Opcode][6-9 Condition][10-26 Offset]
