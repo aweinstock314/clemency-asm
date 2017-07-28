@@ -9,6 +9,8 @@ d2 = {}
 
 CONSTS = {'zero': 0, 'one': 1, 'two': 2}
 
+print "enc_fun_to_dec_fun = {}"
+
 for line in f:
     lines = line.split("\n")
     arg =  rex.search(lines[0]).group(0)
@@ -52,6 +54,8 @@ for line in f:
         else:
             print "    assert ((ins >> {}) & {}) == {}".format(le - j, (1 << (j - arg_start_pos[i] + 1)) - 1, CONSTS[arg_name[i]])
     print "    return ({},), {}".format(','.join(sorted_names), (le/9)+1)
+    print
+    print "enc_fun_to_dec_fun[enc_{name}] = dec_{name}".format(name=name.lower())
     print
 
     #print lines[1].split(",")
