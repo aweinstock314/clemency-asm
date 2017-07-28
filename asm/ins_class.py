@@ -54,6 +54,7 @@ class Imm:
     def __str__(self):
         return str(self.value)
     def untyped_repr(self, _):
+        #return [self.value & ((1 << 9*3)-1)]
         return [self.value]
 
 class Mem:

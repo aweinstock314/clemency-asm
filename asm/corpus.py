@@ -61,7 +61,7 @@ def all_possible_for_class(cls):
                     ret.append(Mem(reg.name, off, regcount))
         return ret
     elif cls == Imm:
-        return [0, 1, 5] # TODO: more representative extrema?
+        return [1, 2, 5] # TODO: more representative extrema?
     elif cls == MemoryFlags:
         return [MemoryFlags(i) for i in range(4)]
     elif cls == Condition:

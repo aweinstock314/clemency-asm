@@ -9,7 +9,10 @@ import struct
 def encode(opcode, args):
     tmp = (op_bits[opcode] + args)
     print opcode, args, tmp
-    return enc_op_to_fun[opcode](*tmp)
+    (val, size) = enc_op_to_fun[opcode](*tmp)
+    print val, bin(val), size
+    assert val >= 0
+    return (val, size)
 
 class ParseException:
     def __init__(self, line, lineno, msg):
@@ -143,7 +146,7 @@ if __name__ == '__main__':
         with open(sys.argv[1], 'r') as f:
             asm = f.read()
             ast, labels = parse(asm)
-            print ast, labels
+            #print ast, labels
             output = assemble(ast, labels)
             print(output)
         with open(sys.argv[2], 'w') as f2:
