@@ -126,7 +126,7 @@ def dec_ra_rb_lo_op(ins):
     uf = (ins >> 0) & 1
     return (opcode,ra,rb,instruction_specific,uf,), 3
 
-def enc_ra_rb_me(opcode,opcode2,ra,rb,one,memoryflags,uf):
+def enc_ra_rb_me(opcode,opcode2,ra,rb,memoryflags,uf):
     ret = 0
     if opcode.bit_length() > 7:
         raise Exception('operand %s out of range 7' % opcode)
@@ -137,9 +137,7 @@ def enc_ra_rb_me(opcode,opcode2,ra,rb,one,memoryflags,uf):
     if rb.bit_length() > 5:
         raise Exception('operand %s out of range 5' % rb)
     ret = ret | (rb << 10)
-    if one.bit_length() > 1:
-        raise Exception('operand %s out of range 1' % one)
-    ret = ret | (one << 9)
+    ret = ret | (1 << 9)
     if memoryflags.bit_length() > 2:
         raise Exception('operand %s out of range 2' % memoryflags)
     ret = ret | (memoryflags << 7)
