@@ -1,8 +1,8 @@
 import itertools
 
-reg_list = ["r%02i"%(i) for i in range(28)] + ["st","ra","pc","fl"]
+reg_list = ["r%02i"%(i) for i in range(29)] + ["st","ra","pc"] #,"fl"]
 assert len(reg_list) == 32
-assert reg_list[31] == "fl"
+#assert reg_list[31] == "fl"
 
 cond2mnem = {
     0b0000: 'n',
@@ -54,6 +54,7 @@ class Imm:
     def __str__(self):
         return str(self.value)
     def untyped_repr(self, _):
+        #return [self.value & ((1 << 9*3)-1)]
         return [self.value]
 
 class Mem:
