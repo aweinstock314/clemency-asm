@@ -5,9 +5,9 @@ rA, rB, rC [0-6 Opcode][7-11 rA][12-16 rB][17-21 rC][22-25 Opcode2][26 UF]
 AD, ADC, ADCM, ADF, ADFM, ADM, AN, ANM, DMT, DV, DVF, DVFM, DVM, DVS, DVSM, MD, MDF, MDFM, MDM, MDS, MDSM, MU, MUF, MUFM, MUM, MUS, MUSM, OR, ORM, RL, RLM, RR, RRM, SA, SAM, SB, SBC, SBCM, SBF, SBFM, SBM, SL, SLM, SR, SRM, XR, XRM
 
 rA, rB, IMM [0-6 Opcode][7-11 rA][12-16 rB][17-21 Imm][24-25 Opcode2][26 UF]
-ADCI, ADCIM, ADI, ADIM, ANI, DVI, DVIM, DVIS, DVISM, MDI, MDIM, MDIS, MDISM, MUI, MUIM, MUIS, MUISM, ORI, RLI, RLIM, RRI, RRIM, SAI, SAIM, SBCI, SBCIM, SBI. SBIM, SLI, SLIM, SRI, SRIM, XRI
+ADCI, ADCIM, ADI, ADIM, ANI, DVI, DVIM, DVIS, DVISM, MDI, MDIM, MDIS, MDISM, MUI, MUIM, MUIS, MUISM, ORI, RLI, RLIM, RRI, RRIM, SAI, SAIM, SBCI, SBCIM, SBI, SBIM, SLI, SLIM, SRI, SRIM, XRI
 
-rA, rB Logical Operation [0-8 Opcode][9-13 rA][14-18 rB][19-25 Instruction_specific][26 UF]
+rA, rB Logical Operation [0-8 Opcode][9-13 rA][14-18 rB][19-25 Opcode2][26 UF]
 BF, BFM, NG, NGF, NGFM, NGM, NT, NTM
 
 rA, rB, MemoryFlags [0-6 Opcode][7-11 rA][12-16 rB][17 one][18-19 MemoryFlags][20-26 Opcode2]
@@ -37,7 +37,7 @@ BR, CR
 rA no flag [0-11 Opcode][12-16 rA][17 Opcode2]
 DI, EI, RF, SF
 
-rA with flag [0-8 Opcode][9-13 rA][14-25 Q][26 UF]
+rA with flag [0-8 Opcode][9-13 rA][14-25 Opcode2][26 UF]
 RND, RNDM
 
 Condition/Offset [0-5 Opcode][6-9 Condition][10-26 Offset]
