@@ -1,6 +1,6 @@
 import itertools
 
-reg_list = ["r%02i"%(i) for i in range(28)] + ["st","ra","pc","fl"]
+reg_list = ["r%02i"%(i) for i in range(29)] + ["st","ra","pc","fl"]
 
 cond2mnem = {
     0b0000: 'n',

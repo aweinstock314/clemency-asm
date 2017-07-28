@@ -1,4 +1,4 @@
-def enc_ra_rb_of_re(opcode,opcode2,ra,rb,regcount,adjust,mem,uf):
+def enc_ra_rb_of_re(opcode,opcode2,ra,rb,mem,regcount,uf):
     ret = 0
     if opcode.bit_length() > 7:
         raise Exception('operand %s out of range 7' % opcode)
@@ -11,10 +11,7 @@ def enc_ra_rb_of_re(opcode,opcode2,ra,rb,regcount,adjust,mem,uf):
     ret = ret | (rb << 37)
     if regcount.bit_length() > 5:
         raise Exception('operand %s out of range 5' % regcount)
-    ret = ret | (regcount << 32)
-    if adjust.bit_length() > 2:
-        raise Exception('operand %s out of range 2' % adjust)
-    ret = ret | (adjust << 30)
+    ret = ret | ((regcount-1) << 32)
     if mem.bit_length() > 27:
         raise Exception('operand %s out of range 27' % mem)
     ret = ret | (mem << 3)
