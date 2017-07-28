@@ -1,8 +1,10 @@
 #!/usr/bin/env python2
 from maps import *
 from ins_class import *
+from bitarray import *
 import re
 import sys
+import struct
 
 def encode(opcode, args):
     return enc_op_to_fun[opcode](*(op_bits[opcode] + args))
@@ -102,12 +104,13 @@ def assemble(ast, labels):
 
     outputs = []
     for (value, size) in zip(values, sizes):
-        #print(value, size)
-        nytes = [(value >> (9*i)) & ((1<<9)-1) for i in range(size)]
-        nytes[0], nytes[1] = nytes[1], nytes[0] # TODO: any 1-nyte instructions?
-        outputs += nytes
-
-    # print(outputs)
+	nytes = []
+	for i in range(size):
+	    nyte = value >> (9*i)
+            nyte = nyte & ((1<<9)-1)
+	    nytes.append(nyte)
+	nytes.reverse()
+        outputs.append(nytes)
     return outputs
 
 def tests():
@@ -126,11 +129,25 @@ HT
     assemble(ast, labels)
 
 if __name__ == '__main__':
-    if len(sys.argv) >= 2:
+    if len(sys.argv) == 3:
         with open(sys.argv[1], 'r') as f:
             asm = f.read()
             ast, labels = parse(asm)
+            print ast, labels
             output = assemble(ast, labels)
             print(output)
+	with open(sys.argv[2], 'w') as f2:
+	    for ins in output:
+		ba_full = bitarray()
+                for nyte in ins:    
+	    	    ba = bitarray()
+                    ba.frombytes(struct.pack('>H',nyte))
+		    ba = ba[7:]
+		    ba_full += ba
+            	ba2 = bitarray()
+	    	ba2[0:9] = ba_full[9:18]
+	    	ba2[9:18] = ba_full[0:9]
+	    	ba2[18:27] = ba_full[18:27]
+	    	f2.write(ba2.tobytes())
     else:
         tests()
