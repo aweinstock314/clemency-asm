@@ -81,6 +81,28 @@ class Ins:
         return 'Ins(%r, %r, %r)' % (self.name, self.uf, self.ops)
     def __str__(self):
         return '%s%s %s' % (self.name, ('.' if self.uf else ''), ', '.join(map(str, self.ops)))
+    def emit(self, data, i):
+        processed_ops = []
+        for op in self.ops:
+            processed_ops.extend(op.untyped_repr((data, i)))
+        processed_ops.append(self.uf)
+
+        name = self.name.lower()
+        if name in branch_ops:
+            (name, cond) = branch_ops[name]
+            processed_ops = [cond] + processed_ops
+
+        from assembler import encode
+        (value, size) = encode(name.upper(), processed_ops)
+        return (value, size)
+
+class RawNytes:
+    def __init__(self, nytes):
+       self.nytes = nytes
+    def emit(self, data, i):
+        import disassembler
+        print self.nytes
+        return (disassembler.nytes2num(self.nytes), len(self.nytes))
 
 class Label:
     def __init__(self, name):

@@ -69,7 +69,13 @@ def parse(source):
                     ops.append(Label(op[1:]))
                 else:
                     raise ParseException(line, i, "Invalid operand %r" % (op,))
-        ast.append(Ins(name, uf, ops))
+        if name in ['db', 'dw', 'dt']:
+            nytes = []
+            for op in ops:
+                nytes.extend(op.untyped_repr(None))
+            ast.append(RawNytes(nytes))
+        else:
+            ast.append(Ins(name, uf, ops))
     return (ast, labels)
 
 def assemble(ast, labels):
@@ -77,17 +83,7 @@ def assemble(ast, labels):
         values = []
         sizes = []
         for (i, instr) in enumerate(ast):
-            processed_ops = []
-            for op in instr.ops:
-                processed_ops.extend(op.untyped_repr((data, i)))
-            processed_ops.append(instr.uf)
-
-            name = instr.name.lower()
-            if name in branch_ops:
-                (name, cond) = branch_ops[name]
-                processed_ops = [cond] + processed_ops
-
-            (value, size) = encode(name.upper(), processed_ops)
+            (value, size) = instr.emit(data, i)
             values.append(value)
             sizes.append(size)
         return (values, sizes)
@@ -135,6 +131,9 @@ foo:
 MUF r0, r5, r10
 BLE &foo
 HT
+dt 41, 42, 43
+db 0xff
+dw 0xfff, 0xfff
 '''
     print(asm)
     ast, labels = parse(asm)
