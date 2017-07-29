@@ -74,3 +74,40 @@ CPU no longer running
 Total instructions: 11, 0.0000m instructions/sec
 Running time: 19.906709 seconds, sleep time: 0.000000 seconds
 ```
+
+## Stability/correctness tests
+
+`corpus.py` generates a cartesian product of all opcodes with a few different immediates.
+`disassemble(assemble(corpus)) == corpus` is verified by `test.sh`:
+
+```
+$ cat test.sh
+#!/bin/sh
+echo "Generating corpus"
+time python asm/corpus.py > corpus.clem
+echo "Assembling corpus"
+time python asm/assembler.py corpus.clem corpus.out
+echo "Disassembling corpus"
+time python asm/disassembler.py corpus.out > corpus2.clem
+
+echo "Length of the diff:"
+diff corpus.clem corpus2.clem | wc
+$ bash test.sh
+Generating corpus
+
+real	0m0.090s
+user	0m0.076s
+sys	0m0.012s
+Assembling corpus
+
+real	0m0.832s
+user	0m0.816s
+sys	0m0.016s
+Disassembling corpus
+
+real	0m14.144s
+user	0m14.140s
+sys	0m0.012s
+Length of the diff:
+      0       0       0
+```

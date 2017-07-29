@@ -7,7 +7,8 @@ import sys
 import struct
 
 def encode(opcode, args):
-    tmp = (op_bits[opcode] + args)
+    from disassembler import bits2num
+    tmp = (map(bits2num, op_bits[opcode]) + args)
     #print opcode, args, tmp
     (val, size) = enc_op_to_fun[opcode](*tmp)
     #print val, bin(val), size
