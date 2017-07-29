@@ -69,7 +69,7 @@ class Mem:
     def __str__(self):
         return '[%s + %#x, %d]' % (self.reg, self.offset, self.regcount)
     def untyped_repr(self, labels):
-        print 'mem', self.reg.untyped_repr(labels) + [self.offset, self.regcount]
+        #print 'mem', self.reg.untyped_repr(labels) + [self.offset, self.regcount]
         return self.reg.untyped_repr(labels) + [self.offset, self.regcount]
 
 class Ins:
@@ -81,6 +81,28 @@ class Ins:
         return 'Ins(%r, %r, %r)' % (self.name, self.uf, self.ops)
     def __str__(self):
         return '%s%s %s' % (self.name, ('.' if self.uf else ''), ', '.join(map(str, self.ops)))
+    def emit(self, data, i):
+        processed_ops = []
+        for op in self.ops:
+            processed_ops.extend(op.untyped_repr((data, i)))
+        processed_ops.append(self.uf)
+
+        name = self.name.lower()
+        if name in branch_ops:
+            (name, cond) = branch_ops[name]
+            processed_ops = [cond] + processed_ops
+
+        from assembler import encode
+        (value, size) = encode(name.upper(), processed_ops)
+        return (value, size)
+
+class RawNytes:
+    def __init__(self, nytes):
+       self.nytes = nytes
+    def emit(self, data, i):
+        import disassembler
+        #print self.nytes
+        return (disassembler.nytes2num(self.nytes), len(self.nytes))
 
 class Label:
     def __init__(self, name):
@@ -93,21 +115,19 @@ class Label:
         if not data:
             return [0]
         labels, sizes = data
-        print('labels: %r' % labels)
-        print('sizes: %r' % sizes)
-        print('i: %r' % i)
+        #print('labels: %r' % labels)
+        #print('sizes: %r' % sizes)
+        #print('i: %r' % i)
         cumulative_sizes = [0]
         total = 0
         for size in sizes:
             total += size
             cumulative_sizes.append(total)
-        print('cumulative_sizes: %r' % cumulative_sizes)
-        # TODO: sanity check correctness for absolute/relative
-        # note: it's probably user error to use jump absolute with a label (since labels are pc-relative)
-        print cumulative_sizes[i]
-        print cumulative_sizes[labels[self.name]]
+        #print('cumulative_sizes: %r' % cumulative_sizes)
+        #print cumulative_sizes[i]
+        #print cumulative_sizes[labels[self.name]]
         relative = cumulative_sizes[labels[self.name]] - cumulative_sizes[i]
-        print('relative: %r' % relative)
+        #print('relative: %r' % relative)
         unsigned_relative = relative & ((1 << (27-10))-1)
         return [unsigned_relative]
 

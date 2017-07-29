@@ -12,21 +12,30 @@ def disassemble(bytes):
     nytes = bits2nytes(bytes2bits(bytes))
     output = []
     while len(nytes) > 0:
-        (op, (data, size)) = try_parse(nytes)
-        #print "Got %r" % op
-        tmp = list(nytes[:size])
-        swapendian(tmp)
-        print "# %r, %r, %r" % (op, nytes2bits(tmp), data)
-        tmp = enc_fun_to_decprime[enc_op_to_fun[op]](op, data)
-        output.append(tmp)
-        print output[-1]
-        nytes = nytes[size:]
+        try:
+            (op, (data, size)) = try_parse(nytes)
+            #print "Got %r" % op
+            tmp = list(nytes[:size])
+            swapendian(tmp)
+            #print "# %r, %r, %r" % (op, nytes2bits(tmp), data)
+            tmp = enc_fun_to_decprime[enc_op_to_fun[op]](op, data)
+            output.append(tmp)
+            #print output[-1]
+            nytes = nytes[size:]
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            #raise e
+            return output
     return output
 
 def try_parse(nytes):
     #print("try_parse")
     candidates = set()
     for enc in enc_fun_to_op:
+        def compare(a, b):
+            l = min(len(a), len(b))
+            return a[-l:] == b[-l:]
         size = enc_fun_to_size[enc]
         nytescopy = list(nytes[:size])
         swapendian(nytescopy)
@@ -42,15 +51,15 @@ def try_parse(nytes):
             #print "\ttmp %r" % tmp
             for op in enc_fun_to_op[enc]:
                 if fieldname == 'opcode':
-                    to_test = list(reversed(num2bits(op_bits[op][0])))
+                    to_test = op_bits[op][0]
                     #print "\t\topcode %r" % ((op, to_test),)
-                    if leftpad(to_test, len(tmp)) == tmp:
+                    if compare(to_test, tmp):
                         opcodes.add(op)
                 if fieldname == 'opcode2':
                     has_opcode2 = True
-                    to_test = list(reversed(num2bits(op_bits[op][1])))
+                    to_test = op_bits[op][1]
                     #print "\t\topcode2 %r" % ((op, to_test),)
-                    if leftpad(to_test, len(tmp)) == tmp:
+                    if compare(to_test, tmp):
                         opcode2s.add(op)
                 if fieldname in CONSTS:
                     if bits2num(tmp) != CONSTS[fieldname]:
@@ -85,17 +94,18 @@ def bytes2bits(bytes):
 
 def bits2nytes(bits):
     ret = []
-    for i in range(0, len(bits), 9):
+    l = len(bits)
+    l -= l % 9
+    for i in range(0, l, 9):
         tmp = 0
         for j in range(9):
-            if i+j < len(bits):
-                tmp += bits[i+j] << j
+            tmp += bits[i+j] << (8-j)
         ret.append(tmp)
     return ret
 
 def bits2num(bits):
     ret = 0
-    for (i, b) in enumerate(bits):
+    for (i, b) in enumerate(bits[::-1]):
         ret += b << i
     return ret
 
@@ -104,15 +114,14 @@ def num2bits(num):
     while num > 0:
         output.append(num & 1)
         num >>= 1
-    if len(output) == 0:
-        output = [0]
-    return output
+    output += [0]*(9-(len(output) % 9))
+    return output[::-1]
 
 def nytes2bits(nytes):
     output = []
     for nyte in nytes:
         for i in range(9):
-            output.append((nyte >> i) & 1)
+            output.append((nyte >> (8-i)) & 1)
     return output
 
 for i in range(0,2**10):

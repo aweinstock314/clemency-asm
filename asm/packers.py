@@ -32,18 +32,18 @@ def enc_ra_rb_of_re(opcode,opcode2,ra,rb,mem,regcount,uf):
 def dec_ra_rb_of_re(ins):
     uf = False
     # start: 0, end: 6
-    opcode = (ins >> 0) & 127
+    opcode = (ins >> 47) & 127
     # start: 51, end: 53
-    opcode2 = (ins >> 51) & 7
+    opcode2 = (ins >> 0) & 7
     # start: 7, end: 11
-    ra = (ins >> 7) & 31
+    ra = (ins >> 42) & 31
     # start: 12, end: 16
-    rb = (ins >> 12) & 31
-    assert ((ins >> 22) & ((1 << (1 + 1)) - 1)) == 0
+    rb = (ins >> 37) & 31
+    assert ((ins >> 30) & ((1 << (1 + 1)) - 1)) == 0
     # start: 24, end: 50
-    mem = (ins >> 24) & 134217727
+    mem = (ins >> 3) & 134217727
     # start: 17, end: 21
-    regcount = (ins >> 17) & 31
+    regcount = (ins >> 32) & 31
     return (opcode,opcode2,ra,rb,mem,regcount,uf,), 6
 
 enc_fun_to_dec_fun[enc_ra_rb_of_re] = dec_ra_rb_of_re
@@ -78,18 +78,18 @@ def enc_ra_rb_of_re_i(opcode,opcode2,ra,rb,mem,regcount,uf):
 def dec_ra_rb_of_re_i(ins):
     uf = False
     # start: 0, end: 6
-    opcode = (ins >> 0) & 127
+    opcode = (ins >> 47) & 127
     # start: 51, end: 53
-    opcode2 = (ins >> 51) & 7
+    opcode2 = (ins >> 0) & 7
     # start: 7, end: 11
-    ra = (ins >> 7) & 31
+    ra = (ins >> 42) & 31
     # start: 12, end: 16
-    rb = (ins >> 12) & 31
-    assert ((ins >> 22) & ((1 << (1 + 1)) - 1)) == 1
+    rb = (ins >> 37) & 31
+    assert ((ins >> 30) & ((1 << (1 + 1)) - 1)) == 1
     # start: 24, end: 50
-    mem = (ins >> 24) & 134217727
+    mem = (ins >> 3) & 134217727
     # start: 17, end: 21
-    regcount = (ins >> 17) & 31
+    regcount = (ins >> 32) & 31
     return (opcode,opcode2,ra,rb,mem,regcount,uf,), 6
 
 enc_fun_to_dec_fun[enc_ra_rb_of_re_i] = dec_ra_rb_of_re_i
@@ -124,18 +124,18 @@ def enc_ra_rb_of_re_d(opcode,opcode2,ra,rb,mem,regcount,uf):
 def dec_ra_rb_of_re_d(ins):
     uf = False
     # start: 0, end: 6
-    opcode = (ins >> 0) & 127
+    opcode = (ins >> 47) & 127
     # start: 51, end: 53
-    opcode2 = (ins >> 51) & 7
+    opcode2 = (ins >> 0) & 7
     # start: 7, end: 11
-    ra = (ins >> 7) & 31
+    ra = (ins >> 42) & 31
     # start: 12, end: 16
-    rb = (ins >> 12) & 31
-    assert ((ins >> 22) & ((1 << (1 + 1)) - 1)) == 2
+    rb = (ins >> 37) & 31
+    assert ((ins >> 30) & ((1 << (1 + 1)) - 1)) == 2
     # start: 24, end: 50
-    mem = (ins >> 24) & 134217727
+    mem = (ins >> 3) & 134217727
     # start: 17, end: 21
-    regcount = (ins >> 17) & 31
+    regcount = (ins >> 32) & 31
     return (opcode,opcode2,ra,rb,mem,regcount,uf,), 6
 
 enc_fun_to_dec_fun[enc_ra_rb_of_re_d] = dec_ra_rb_of_re_d
@@ -167,17 +167,17 @@ def enc_ra_rb_rc(opcode,opcode2,ra,rb,rc,uf):
 def dec_ra_rb_rc(ins):
     uf = False
     # start: 0, end: 6
-    opcode = (ins >> 0) & 127
+    opcode = (ins >> 20) & 127
     # start: 22, end: 25
-    opcode2 = (ins >> 22) & 15
+    opcode2 = (ins >> 1) & 15
     # start: 7, end: 11
-    ra = (ins >> 7) & 31
+    ra = (ins >> 15) & 31
     # start: 12, end: 16
-    rb = (ins >> 12) & 31
+    rb = (ins >> 10) & 31
     # start: 17, end: 21
-    rc = (ins >> 17) & 31
+    rc = (ins >> 5) & 31
     # start: 26, end: 26
-    uf = (ins >> 26) & 1
+    uf = (ins >> 0) & 1
     return (opcode,opcode2,ra,rb,rc,uf,), 3
 
 enc_fun_to_dec_fun[enc_ra_rb_rc] = dec_ra_rb_rc
@@ -209,17 +209,17 @@ def enc_ra_rb_im(opcode,opcode2,ra,rb,imm,uf):
 def dec_ra_rb_im(ins):
     uf = False
     # start: 0, end: 6
-    opcode = (ins >> 0) & 127
+    opcode = (ins >> 20) & 127
     # start: 24, end: 25
-    opcode2 = (ins >> 24) & 3
+    opcode2 = (ins >> 1) & 3
     # start: 7, end: 11
-    ra = (ins >> 7) & 31
+    ra = (ins >> 15) & 31
     # start: 12, end: 16
-    rb = (ins >> 12) & 31
+    rb = (ins >> 10) & 31
     # start: 17, end: 23
-    imm = (ins >> 17) & 127
+    imm = (ins >> 3) & 127
     # start: 26, end: 26
-    uf = (ins >> 26) & 1
+    uf = (ins >> 0) & 1
     return (opcode,opcode2,ra,rb,imm,uf,), 3
 
 enc_fun_to_dec_fun[enc_ra_rb_im] = dec_ra_rb_im
@@ -248,15 +248,15 @@ def enc_ra_rb_lo_op(opcode,opcode2,ra,rb,uf):
 def dec_ra_rb_lo_op(ins):
     uf = False
     # start: 0, end: 8
-    opcode = (ins >> 0) & 511
+    opcode = (ins >> 18) & 511
     # start: 19, end: 25
-    opcode2 = (ins >> 19) & 127
+    opcode2 = (ins >> 1) & 127
     # start: 9, end: 13
-    ra = (ins >> 9) & 31
+    ra = (ins >> 13) & 31
     # start: 14, end: 18
-    rb = (ins >> 14) & 31
+    rb = (ins >> 8) & 31
     # start: 26, end: 26
-    uf = (ins >> 26) & 1
+    uf = (ins >> 0) & 1
     return (opcode,opcode2,ra,rb,uf,), 3
 
 enc_fun_to_dec_fun[enc_ra_rb_lo_op] = dec_ra_rb_lo_op
@@ -286,16 +286,16 @@ def enc_ra_rb_me(opcode,opcode2,ra,rb,memoryflags,uf):
 def dec_ra_rb_me(ins):
     uf = False
     # start: 0, end: 6
-    opcode = (ins >> 0) & 127
+    opcode = (ins >> 20) & 127
     # start: 20, end: 26
-    opcode2 = (ins >> 20) & 127
+    opcode2 = (ins >> 0) & 127
     # start: 7, end: 11
-    ra = (ins >> 7) & 31
+    ra = (ins >> 15) & 31
     # start: 12, end: 16
-    rb = (ins >> 12) & 31
-    assert ((ins >> 17) & ((1 << (0 + 1)) - 1)) == 1
+    rb = (ins >> 10) & 31
+    assert ((ins >> 9) & ((1 << (0 + 1)) - 1)) == 1
     # start: 18, end: 19
-    memoryflags = (ins >> 18) & 3
+    memoryflags = (ins >> 7) & 3
     return (opcode,opcode2,ra,rb,memoryflags,uf,), 3
 
 enc_fun_to_dec_fun[enc_ra_rb_me] = dec_ra_rb_me
@@ -321,13 +321,13 @@ def enc_ra_rb_lo_ve_no_fl(opcode,opcode2,ra,rb,uf):
 def dec_ra_rb_lo_ve_no_fl(ins):
     uf = False
     # start: 0, end: 8
-    opcode = (ins >> 0) & 511
+    opcode = (ins >> 18) & 511
     # start: 19, end: 26
-    opcode2 = (ins >> 19) & 255
+    opcode2 = (ins >> 0) & 255
     # start: 9, end: 13
-    ra = (ins >> 9) & 31
+    ra = (ins >> 13) & 31
     # start: 14, end: 18
-    rb = (ins >> 14) & 31
+    rb = (ins >> 8) & 31
     return (opcode,opcode2,ra,rb,uf,), 3
 
 enc_fun_to_dec_fun[enc_ra_rb_lo_ve_no_fl] = dec_ra_rb_lo_ve_no_fl
@@ -353,13 +353,13 @@ def enc_ra_rb_lo_ve_no_fl_al(opcode,opcode2,ra,rb,uf):
 def dec_ra_rb_lo_ve_no_fl_al(ins):
     uf = False
     # start: 0, end: 6
-    opcode = (ins >> 0) & 127
+    opcode = (ins >> 20) & 127
     # start: 17, end: 26
-    opcode2 = (ins >> 17) & 1023
+    opcode2 = (ins >> 0) & 1023
     # start: 7, end: 11
-    ra = (ins >> 7) & 31
+    ra = (ins >> 15) & 31
     # start: 12, end: 16
-    rb = (ins >> 12) & 31
+    rb = (ins >> 10) & 31
     return (opcode,opcode2,ra,rb,uf,), 3
 
 enc_fun_to_dec_fun[enc_ra_rb_lo_ve_no_fl_al] = dec_ra_rb_lo_ve_no_fl_al
@@ -385,13 +385,13 @@ def enc_ra_rb_lo_ve_no_fl_al_tw(opcode,opcode2,ra,rb,uf):
 def dec_ra_rb_lo_ve_no_fl_al_tw(ins):
     uf = False
     # start: 0, end: 11
-    opcode = (ins >> 0) & 4095
+    opcode = (ins >> 15) & 4095
     # start: 22, end: 26
-    opcode2 = (ins >> 22) & 31
+    opcode2 = (ins >> 0) & 31
     # start: 12, end: 16
-    ra = (ins >> 12) & 31
+    ra = (ins >> 10) & 31
     # start: 17, end: 21
-    rb = (ins >> 17) & 31
+    rb = (ins >> 5) & 31
     return (opcode,opcode2,ra,rb,uf,), 3
 
 enc_fun_to_dec_fun[enc_ra_rb_lo_ve_no_fl_al_tw] = dec_ra_rb_lo_ve_no_fl_al_tw
@@ -414,11 +414,11 @@ def enc_ra_rb_sh_ve(opcode,ra,rb,uf):
 def dec_ra_rb_sh_ve(ins):
     uf = False
     # start: 0, end: 7
-    opcode = (ins >> 0) & 255
+    opcode = (ins >> 10) & 255
     # start: 8, end: 12
-    ra = (ins >> 8) & 31
+    ra = (ins >> 5) & 31
     # start: 13, end: 17
-    rb = (ins >> 13) & 31
+    rb = (ins >> 0) & 31
     return (opcode,ra,rb,uf,), 2
 
 enc_fun_to_dec_fun[enc_ra_rb_sh_ve] = dec_ra_rb_sh_ve
@@ -441,11 +441,11 @@ def enc_ra_im(opcode,ra,imm,uf):
 def dec_ra_im(ins):
     uf = False
     # start: 0, end: 7
-    opcode = (ins >> 0) & 255
+    opcode = (ins >> 19) & 255
     # start: 8, end: 12
-    ra = (ins >> 8) & 31
+    ra = (ins >> 14) & 31
     # start: 13, end: 26
-    imm = (ins >> 13) & 16383
+    imm = (ins >> 0) & 16383
     return (opcode,ra,imm,uf,), 3
 
 enc_fun_to_dec_fun[enc_ra_im] = dec_ra_im
@@ -468,11 +468,11 @@ def enc_ra_im_al(opcode,ra,imm,uf):
 def dec_ra_im_al(ins):
     uf = False
     # start: 0, end: 4
-    opcode = (ins >> 0) & 31
+    opcode = (ins >> 22) & 31
     # start: 5, end: 9
-    ra = (ins >> 5) & 31
+    ra = (ins >> 17) & 31
     # start: 10, end: 26
-    imm = (ins >> 10) & 131071
+    imm = (ins >> 0) & 131071
     return (opcode,ra,imm,uf,), 3
 
 enc_fun_to_dec_fun[enc_ra_im_al] = dec_ra_im_al
@@ -498,13 +498,13 @@ def enc_co_ra(opcode,opcode2,condition,ra,uf):
 def dec_co_ra(ins):
     uf = False
     # start: 0, end: 5
-    opcode = (ins >> 0) & 63
+    opcode = (ins >> 12) & 63
     # start: 15, end: 17
-    opcode2 = (ins >> 15) & 7
+    opcode2 = (ins >> 0) & 7
     # start: 6, end: 9
-    condition = (ins >> 6) & 15
+    condition = (ins >> 8) & 15
     # start: 10, end: 14
-    ra = (ins >> 10) & 31
+    ra = (ins >> 3) & 31
     return (opcode,opcode2,condition,ra,uf,), 2
 
 enc_fun_to_dec_fun[enc_co_ra] = dec_co_ra
@@ -527,11 +527,11 @@ def enc_ra_no_fl(opcode,opcode2,ra,uf):
 def dec_ra_no_fl(ins):
     uf = False
     # start: 0, end: 11
-    opcode = (ins >> 0) & 4095
+    opcode = (ins >> 6) & 4095
     # start: 17, end: 17
-    opcode2 = (ins >> 17) & 1
+    opcode2 = (ins >> 0) & 1
     # start: 12, end: 16
-    ra = (ins >> 12) & 31
+    ra = (ins >> 1) & 31
     return (opcode,opcode2,ra,uf,), 2
 
 enc_fun_to_dec_fun[enc_ra_no_fl] = dec_ra_no_fl
@@ -557,13 +557,13 @@ def enc_ra_wi_fl(opcode,opcode2,ra,uf):
 def dec_ra_wi_fl(ins):
     uf = False
     # start: 0, end: 8
-    opcode = (ins >> 0) & 511
+    opcode = (ins >> 18) & 511
     # start: 14, end: 25
-    opcode2 = (ins >> 14) & 4095
+    opcode2 = (ins >> 1) & 4095
     # start: 9, end: 13
-    ra = (ins >> 9) & 31
+    ra = (ins >> 13) & 31
     # start: 26, end: 26
-    uf = (ins >> 26) & 1
+    uf = (ins >> 0) & 1
     return (opcode,opcode2,ra,uf,), 3
 
 enc_fun_to_dec_fun[enc_ra_wi_fl] = dec_ra_wi_fl
@@ -586,11 +586,11 @@ def enc_co(opcode,condition,offset,uf):
 def dec_co(ins):
     uf = False
     # start: 0, end: 5
-    opcode = (ins >> 0) & 63
+    opcode = (ins >> 21) & 63
     # start: 6, end: 9
-    condition = (ins >> 6) & 15
+    condition = (ins >> 17) & 15
     # start: 10, end: 26
-    offset = (ins >> 10) & 131071
+    offset = (ins >> 0) & 131071
     return (opcode,condition,offset,uf,), 3
 
 enc_fun_to_dec_fun[enc_co] = dec_co
@@ -610,9 +610,9 @@ def enc_lo(opcode,location,uf):
 def dec_lo(ins):
     uf = False
     # start: 0, end: 8
-    opcode = (ins >> 0) & 511
+    opcode = (ins >> 27) & 511
     # start: 9, end: 35
-    location = (ins >> 9) & 134217727
+    location = (ins >> 0) & 134217727
     return (opcode,location,uf,), 4
 
 enc_fun_to_dec_fun[enc_lo] = dec_lo
@@ -632,9 +632,9 @@ def enc_of(opcode,offset,uf):
 def dec_of(ins):
     uf = False
     # start: 0, end: 8
-    opcode = (ins >> 0) & 511
+    opcode = (ins >> 27) & 511
     # start: 9, end: 35
-    offset = (ins >> 9) & 134217727
+    offset = (ins >> 0) & 134217727
     return (opcode,offset,uf,), 4
 
 enc_fun_to_dec_fun[enc_of] = dec_of
