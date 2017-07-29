@@ -8,13 +8,17 @@ import math
 import sys
 import pdb
 
-def disassemble_bytes(bytes):
+def disassemble_bytes(bytes, limit=None):
     nytes = bits2nytes(bytes2bits(bytes))
-    return disassemble_nytes(nytes)
+    return disassemble_nytes(nytes, limit)
 
-def disassemble_nytes(nytes):
+def disassemble_nytes(nytes, limit=None):
     output = []
+    i = 0
     while len(nytes) > 1:
+        i += 1
+        if limit and i > limit:
+            break
         try:
             (op, (data, size)) = try_parse(nytes)
             #print "Got %r" % op
@@ -26,7 +30,7 @@ def disassemble_nytes(nytes):
             nytes = nytes[size:]
         except Exception as e:
             import traceback
-            traceback.print_exc()
+            #traceback.print_exc()
             #raise e
             return output
     return output

@@ -1,4 +1,5 @@
 from bits import *
+from packers import *
 import itertools
 
 reg_list = ["r%02i"%(i) for i in range(29)] + ["st","ra","pc"] #,"fl"]
@@ -96,6 +97,22 @@ class Ins:
         from assembler import encode
         (value, size) = encode(name.upper(), processed_ops)
         return (value, size)
+    def size(self):
+        from maps import enc_op_to_fun
+        name = self.name
+        if name in branch_ops:
+            name = branch_ops[name][0]
+        name = name.upper()
+        return enc_fun_to_size[enc_op_to_fun[name]]
+    def location(self, selfaddr):
+        if (self.name in branch_ops and branch_ops[self.name][0] in ['b', 'c']) or self.name in ['brr', 'car']:
+            unsigned = self.ops[0].value
+            TWOC = 27 if self.name in ['brr', 'car'] else 17
+            signed = -((1 << TWOC) - unsigned) if unsigned & (1<<(TWOC-1)) else unsigned
+            return selfaddr + signed
+        if self.name in ['bra', 'caa']:
+            return self.ops[0].value
+        return None
 
 class RawNytes:
     def __init__(self, nytes):
