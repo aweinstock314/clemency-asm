@@ -13,38 +13,39 @@ def disassemble(bytes):
     output = []
     while len(nytes) > 0:
         (op, (data, size)) = try_parse(nytes)
-        print "Got %r" % op
+        #print "Got %r" % op
         output.append((op, data))
+        print output[-1]
         nytes = nytes[size:]
     return output
 
 def try_parse(nytes):
-    print("try_parse")
+    #print("try_parse")
     candidates = set()
     for enc in enc_fun_to_op:
         size = enc_fun_to_size[enc]
         nytescopy = list(nytes[:size])
         swapendian(nytescopy)
-        print("  try_parse: %r" % nytes2bits(nytescopy))
+        #print("  try_parse: %r" % nytes2bits(nytescopy))
         #print nytescopy
         #print nytes2bits(nytescopy)
         opcodes = set()
         opcode2s = set()
         has_opcode2 = False
-        print enc_fun_to_fields[enc]
+        #print enc_fun_to_fields[enc]
         for (fieldname, start, end) in enc_fun_to_fields[enc]:
             tmp = nytes2bits(nytescopy)[start:end+1]
-            print "\ttmp %r" % tmp
+            #print "\ttmp %r" % tmp
             for op in enc_fun_to_op[enc]:
                 if fieldname == 'opcode':
                     to_test = list(reversed(num2bits(op_bits[op][0])))
-                    print "\t\topcode %r" % ((op, to_test),)
+                    #print "\t\topcode %r" % ((op, to_test),)
                     if leftpad(to_test, len(tmp)) == tmp:
                         opcodes.add(op)
                 if fieldname == 'opcode2':
                     has_opcode2 = True
                     to_test = list(reversed(num2bits(op_bits[op][1])))
-                    print "\t\topcode2 %r" % ((op, to_test),)
+                    #print "\t\topcode2 %r" % ((op, to_test),)
                     if leftpad(to_test, len(tmp)) == tmp:
                         opcode2s.add(op)
                 if fieldname in CONSTS:
@@ -55,9 +56,9 @@ def try_parse(nytes):
             intersection = opcodes.intersection(opcode2s)
         else:
             intersection = opcodes
-        print "\t%r" % ((has_opcode2, intersection),)
+        #print "\t%r" % ((has_opcode2, intersection),)
         candidates = candidates.union(intersection)
-    print candidates
+    #print candidates
     if len(candidates) == 1:
         op = list(candidates)[0]
         return (op, dec_op_to_fun[op](nytes2num(nytescopy)))
@@ -132,4 +133,5 @@ if __name__ == '__main__':
         data = open(sys.argv[1], 'r').read()
         #print bytes2bits(data)
         tmp = disassemble(data)
-        print tmp
+        for thing in tmp:
+            print thing
