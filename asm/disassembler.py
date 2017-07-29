@@ -14,6 +14,9 @@ def disassemble(bytes):
     while len(nytes) > 0:
         (op, (data, size)) = try_parse(nytes)
         #print "Got %r" % op
+        tmp = list(nytes[:size])
+        swapendian(tmp)
+        print "# %r, %r, %r" % (op, nytes2bits(tmp), data)
         tmp = enc_fun_to_decprime[enc_op_to_fun[op]](op, data)
         output.append(tmp)
         print output[-1]
@@ -58,10 +61,15 @@ def try_parse(nytes):
         else:
             intersection = opcodes
         #print "\t%r" % ((has_opcode2, intersection),)
+        if len(intersection) == 1:
+            the_size = size
         candidates = candidates.union(intersection)
     #print candidates
     if len(candidates) == 1:
+        nytescopy = list(nytes[:the_size])
+        swapendian(nytescopy)
         op = list(candidates)[0]
+        #print "; %r" % nytes2bits(nytescopy)
         return (op, dec_op_to_fun[op](nytes2num(nytescopy)))
     else:
         raise Exception("Non-unique or empty decode: %r" % (candidates,))

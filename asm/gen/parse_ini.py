@@ -57,6 +57,7 @@ if __name__ == '__main__':
         print "    uf = False"
         for i, j in enumerate(arg_pos):
             if arg_name[i] not in CONSTS:
+                print "    # start: %d, end: %d" % (arg_start_pos[i], j)
                 print "    {} = (ins >> {}) & {}".format(arg_name[i], arg_start_pos[i], (1 << ((j-arg_start_pos[i])+1)) - 1)
             else:
                 print "    assert ((ins >> {}) & ((1 << ({} + 1)) - 1)) == {}".format(arg_start_pos[i], j-arg_start_pos[i], CONSTS[arg_name[i]])
