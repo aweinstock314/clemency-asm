@@ -113,6 +113,22 @@ def unpack9_to_int_list(x):
 
     return newbytes_ints
 
+def pack9_from_int_list(x):
+    bits = ''
+
+    for i in x:
+        bits += bin(i)[2:].zfill(9)
+
+    pad = len(bits) % 8
+    if pad: 
+        bits += "0"* (8 - pad)
+
+    bits = "0b" + bits
+    bstream = bitstring.BitStream(bits)
+     
+    return bstream.read(len(bstream)).hex.decode("hex")
+
+
 def unpack9_to_int_list_with_wdith(data, format_and_len):
     '''
     Unpack data based on format and length tuple list
