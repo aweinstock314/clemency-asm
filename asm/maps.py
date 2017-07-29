@@ -41,7 +41,7 @@ enc_fun_to_decprime = {
     enc_ra_rb_sh_ve: lambda op, (_, ra, rb, uf): Ins(op, uf, [Reg(ra), Reg(rb)]),
     enc_ra_no_fl: lambda op, (_, _1, ra, uf): Ins(op, uf, [Reg(ra)]),
     enc_lo: lambda op, (_, lo, uf): Ins(op, uf, [Imm(lo)]),
-    enc_co: lambda op, (_, co, of, uf): Ins(op, uf, [Condition(co), Imm(of)]),
+    enc_co: lambda op, (_, co, of, uf): Ins(inv_branch_ops[(op.lower(), co)], uf, [Imm(of)]),
     enc_ra_rb_lo_op: lambda op, (_, _1, ra, rb, uf): Ins(op, uf, [Reg(ra), Reg(rb)]),
     enc_ra_wi_fl: lambda op, (_, _1, ra, uf): Ins(op, uf, [Reg(ra)]),
     enc_ra_im: lambda op, (_, ra, im, uf): Ins(op, uf, [Reg(ra), Imm(im)]),

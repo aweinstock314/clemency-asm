@@ -12,15 +12,18 @@ def disassemble(bytes):
     nytes = bits2nytes(bytes2bits(bytes))
     output = []
     while len(nytes) > 0:
-        (op, (data, size)) = try_parse(nytes)
-        #print "Got %r" % op
-        tmp = list(nytes[:size])
-        swapendian(tmp)
-        print "# %r, %r, %r" % (op, nytes2bits(tmp), data)
-        tmp = enc_fun_to_decprime[enc_op_to_fun[op]](op, data)
-        output.append(tmp)
-        print output[-1]
-        nytes = nytes[size:]
+        try:
+            (op, (data, size)) = try_parse(nytes)
+            #print "Got %r" % op
+            tmp = list(nytes[:size])
+            swapendian(tmp)
+            #print "# %r, %r, %r" % (op, nytes2bits(tmp), data)
+            tmp = enc_fun_to_decprime[enc_op_to_fun[op]](op, data)
+            output.append(tmp)
+            #print output[-1]
+            nytes = nytes[size:]
+        except:
+            return output
     return output
 
 def try_parse(nytes):
@@ -42,13 +45,13 @@ def try_parse(nytes):
             #print "\ttmp %r" % tmp
             for op in enc_fun_to_op[enc]:
                 if fieldname == 'opcode':
-                    to_test = list(reversed(num2bits(op_bits[op][0])))
+                    to_test = num2bits(op_bits[op][0])
                     #print "\t\topcode %r" % ((op, to_test),)
                     if leftpad(to_test, len(tmp)) == tmp:
                         opcodes.add(op)
                 if fieldname == 'opcode2':
                     has_opcode2 = True
-                    to_test = list(reversed(num2bits(op_bits[op][1])))
+                    to_test = num2bits(op_bits[op][1])
                     #print "\t\topcode2 %r" % ((op, to_test),)
                     if leftpad(to_test, len(tmp)) == tmp:
                         opcode2s.add(op)
@@ -95,7 +98,7 @@ def bits2nytes(bits):
 
 def bits2num(bits):
     ret = 0
-    for (i, b) in enumerate(bits):
+    for (i, b) in enumerate(bits[::-1]):
         ret += b << i
     return ret
 
@@ -106,7 +109,7 @@ def num2bits(num):
         num >>= 1
     if len(output) == 0:
         output = [0]
-    return output
+    return output[::-1]
 
 def nytes2bits(nytes):
     output = []
@@ -124,7 +127,7 @@ for i in range(0,2**10):
     print 'converted i', bits2num(nytes2bits(bits2nytes(num2bits(i))))
     '''
     assert bits2num(num2bits(i)) == i
-    assert bits2num(nytes2bits(bits2nytes(num2bits(i)))) == i
+    #assert bits2num(nytes2bits(bits2nytes(num2bits(i)))) == i
     #assert bits2num(bytes2bits(bits2bytes(num2bits(i)))) == i
 
 def nytes2num(nytes):
