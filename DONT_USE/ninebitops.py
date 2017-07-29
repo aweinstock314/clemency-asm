@@ -66,7 +66,6 @@ def unpack9_to_ascii(x):
         #    raise Exception("Non-ascii 9-bit byte value: %x" % val)
 
     return ascii_data
-
 def unpack9_to_ascii(x):
 
     newbytes_ints = unpack9_to_int_list(x)
@@ -95,20 +94,8 @@ def unpack9_to_int_list(x):
 
     newbytes_ints = []
 
-    #binary = []
     for i in xrange(0, len(bits) - 9, 9):
         seg = bits[i:i+9]
-        '''
-        # Build long binary string
-        for b in seg:
-            binary.append("{:08b}".format(ord(b)))
-        binary = "".join(binary)
-        # Slice into 9 bit ints
-        for j in range(len(binary)/9):
-            byte = binary[j*9:(j+1)*9]
-            val = int(byte, 2)
-            newbytes_ints.append(val)
-        '''
         newbytes_ints.append(seg.uint)
 
     return newbytes_ints
@@ -261,3 +248,4 @@ def unpack_multiple_slow(bit9,depth=0):
     if depth==0:
         return ''.join(chr(x) if x<127 else '?' for x in final)
     return final
+
