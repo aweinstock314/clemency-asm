@@ -8,9 +8,9 @@ import struct
 
 def encode(opcode, args):
     tmp = (op_bits[opcode] + args)
-    print opcode, args, tmp
+    #print opcode, args, tmp
     (val, size) = enc_op_to_fun[opcode](*tmp)
-    print val, bin(val), size
+    #print val, bin(val), size
     assert val >= 0
     return (val, size)
 
@@ -150,8 +150,6 @@ if __name__ == '__main__':
             ast, labels = parse(asm)
             #print ast, labels
             output = assemble(ast, labels)
-            print(output)
+            #print(output)
         with open(sys.argv[2], 'w') as f2:
             f2.write(nytes_to_bytes(output))
-    else:
-        tests()

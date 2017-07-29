@@ -89,7 +89,7 @@ def bits2nytes(bits):
         tmp = 0
         for j in range(9):
             if i+j < len(bits):
-                tmp += bits[i+j] << j
+                tmp += bits[i+j] << (8-j)
         ret.append(tmp)
     return ret
 
@@ -112,7 +112,7 @@ def nytes2bits(nytes):
     output = []
     for nyte in nytes:
         for i in range(9):
-            output.append((nyte >> i) & 1)
+            output.append((nyte >> (8-i)) & 1)
     return output
 
 for i in range(0,2**10):
