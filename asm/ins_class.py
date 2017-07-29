@@ -51,12 +51,15 @@ class Reg:
         return [self.num]
 
 class Imm:
-    def __init__(self, value):
+    def __init__(self, value, signedwidth=None):
         self.value = value
+        self.signedwidth = signedwidth
     def __repr__(self):
         return 'Imm(%r)' % self.value
     def __str__(self):
-        return str(self.value)
+        if self.signedwidth:
+            return hex(signconversion(self.value, self.signedwidth))
+        return hex(self.value)
     def untyped_repr(self, _):
         #return [self.value & ((1 << 9*3)-1)]
         return [self.value]
@@ -107,9 +110,8 @@ class Ins:
     def location(self, selfaddr):
         if (self.name in branch_ops and branch_ops[self.name][0] in ['b', 'c']) or self.name in ['brr', 'car']:
             unsigned = self.ops[0].value
-            TWOC = 27 if self.name in ['brr', 'car'] else 17
-            signed = -((1 << TWOC) - unsigned) if unsigned & (1<<(TWOC-1)) else unsigned
-            return selfaddr + signed
+            width = 27 if self.name in ['brr', 'car'] else 17
+            return selfaddr + signconversion(unsigned, width)
         if self.name in ['bra', 'caa']:
             return self.ops[0].value
         return None

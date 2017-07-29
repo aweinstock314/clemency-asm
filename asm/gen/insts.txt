@@ -50,10 +50,10 @@ Condition/Offset [0-5 Opcode][6-9 Condition][10-26 Offset]
 B, C
 
 Location [0-8 Opcode][9-35 Location]
-BRA, BRR, CAA
+BRA, CAA
 
 Offset [0-8 Opcode][9-35 Offset]
-CAR
+BRR, CAR
 
 No regs [0-17 Opcode]
 DBRK, HT, IR, RE, WT

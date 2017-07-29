@@ -63,3 +63,7 @@ def swapendian(nytes):
     if len(nytes) >= 5:
         nytes[3], nytes[4] = nytes[4], nytes[3]
     return nytes
+
+def signconversion(unsigned, width):
+    signed = -((1 << width) - unsigned) if unsigned & (1<<(width-1)) else unsigned
+    return signed
