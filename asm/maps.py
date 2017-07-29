@@ -29,7 +29,7 @@ enc_fun_to_decprime = {
     enc_ra_rb_me: lambda op, (_, _1, ra, rb, me, uf): Ins(op, uf, [Reg(ra), Reg(rb), MemoryFlags(me)]),
     enc_ra_rb_rc: lambda op, (_, _1, ra, rb, rc, uf): Ins(op, uf, [Reg(ra), Reg(rb), Reg(rc)]),
     enc_no_re: lambda op, (_, uf): Ins(op, uf, []),
-    enc_co_ra: lambda op, (_, _1, co, ra, uf): Ins(op, uf, [Condition(co), Reg(ra)]), # TODO: reconstruct branch pseudo-ops
+    enc_co_ra: lambda op, (_, _1, co, ra, uf): Ins(inv_branch_ops[(op.lower(), co)], uf, [Reg(ra)]),
     enc_ra_rb_lo_ve_no_fl: lambda op, (_, _1, ra, rb, uf): Ins(op, uf, [Reg(ra), Reg(rb)]),
     enc_ra_rb_of_re: lambda op, (_, _1, ra, rb, mem, regcount, uf): Ins(op, uf, [Reg(ra), Mem(rb, mem, regcount)]),
     enc_ra_rb_of_re_i: lambda op, (_, _1, ra, rb, mem, regcount, uf): Ins(op, uf, [Reg(ra), Mem(rb, mem, regcount)]),
