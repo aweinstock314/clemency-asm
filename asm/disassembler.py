@@ -14,7 +14,8 @@ def disassemble(bytes):
     while len(nytes) > 0:
         (op, (data, size)) = try_parse(nytes)
         #print "Got %r" % op
-        output.append((op, data))
+        tmp = enc_fun_to_decprime[enc_op_to_fun[op]](op, data)
+        output.append(tmp)
         print output[-1]
         nytes = nytes[size:]
     return output

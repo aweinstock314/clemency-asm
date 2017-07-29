@@ -32,6 +32,8 @@ inv_branch_ops = {k: v for (v,k) in branch_ops.items()}
 
 class Reg:
     def __init__(self,name):
+        if isinstance(name, type(0)):
+            name = reg_list[name] # hack for number-passing
         self.name = name.lower()
         if self.name.startswith('r') and self.name != 'ra':
             self.num = int(self.name[1:], 10)

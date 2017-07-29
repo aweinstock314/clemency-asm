@@ -1,4 +1,5 @@
 from collections import defaultdict
+from ins_class import *
 from packers import *
 
 enc_fun_to_op = {
@@ -22,6 +23,29 @@ enc_fun_to_op = {
     enc_ra_wi_fl: ['RND', 'RNDM'], 
     enc_ra_im: ['CMI', 'CMIM'], 
     enc_ra_rb_im: ['ADCI', 'ADCIM', 'ADI', 'ADIM', 'ANI', 'DVI', 'DVIM', 'DVIS', 'DVISM', 'MDI', 'MDIM', 'MDIS', 'MDISM', 'MUI', 'MUIM', 'MUIS', 'MUISM', 'ORI', 'RLI', 'RLIM', 'RRI', 'RRIM', 'SAI', 'SAIM', 'SBCI', 'SBCIM', 'SBI', 'SBIM', 'SLI', 'SLIM', 'SRI', 'SRIM', 'XRI'],
+}
+
+enc_fun_to_decprime = {
+    enc_ra_rb_me: lambda op, (_, _1, ra, rb, me, uf): Ins(op, uf, [Reg(ra), Reg(rb), MemoryFlags(me)]),
+    enc_ra_rb_rc: lambda op, (_, _1, ra, rb, rc, uf): Ins(op, uf, [Reg(ra), Reg(rb), Reg(rc)]),
+    enc_no_re: lambda op, (_, uf): Ins(op, uf, []),
+    enc_co_ra: lambda op, (_, _1, co, ra, uf): Ins(op, uf, [Condition(co), Reg(ra)]), # TODO: reconstruct branch pseudo-ops
+    enc_ra_rb_lo_ve_no_fl: lambda op, (_, _1, ra, rb, uf): Ins(op, uf, [Reg(ra), Reg(rb)]),
+    enc_ra_rb_of_re: lambda op, (_, _1, ra, rb, mem, regcount, uf): Ins(op, uf, [Reg(ra), Mem(rb, mem, regcount)]),
+    enc_ra_rb_of_re_i: lambda op, (_, _1, ra, rb, mem, regcount, uf): Ins(op, uf, [Reg(ra), Mem(rb, mem, regcount)]),
+    enc_ra_rb_of_re_d: lambda op, (_, _1, ra, rb, mem, regcount, uf): Ins(op, uf, [Reg(ra), Mem(rb, mem, regcount)]),
+    enc_of: lambda op, (_, of, uf): Ins(op, uf, [Imm(of)]),
+    enc_ra_rb_lo_ve_no_fl_al: lambda op, (_, _1, ra, rb, uf): Ins(op, uf, [Reg(ra), Reg(rb)]),
+    enc_ra_rb_lo_ve_no_fl_al_tw: lambda op, (_, _1, ra, rb, uf): Ins(op, uf, [Reg(ra), Reg(rb)]),
+    enc_ra_im_al: lambda op, (_, ra, im, uf): Ins(op, uf, [Reg(ra), Imm(im)]),
+    enc_ra_rb_sh_ve: lambda op, (_, ra, rb, uf): Ins(op, uf, [Reg(ra), Reg(rb)]),
+    enc_ra_no_fl: lambda op, (_, _1, ra, uf): Ins(op, uf, [Reg(ra)]),
+    enc_lo: lambda op, (_, lo, uf): Ins(op, uf, [Imm(lo)]),
+    enc_co: lambda op, (_, co, of, uf): Ins(op, uf, [Condition(co), Imm(of)]),
+    enc_ra_rb_lo_op: lambda op, (_, _1, ra, rb, uf): Ins(op, uf, [Reg(ra), Reg(rb)]),
+    enc_ra_wi_fl: lambda op, (_, _1, ra, uf): Ins(op, uf, [Reg(ra)]),
+    enc_ra_im: lambda op, (_, ra, im, uf): Ins(op, uf, [Reg(ra), Imm(im)]),
+    enc_ra_rb_im: lambda op, (_, _1, ra, rb, im, uf): Ins(op, uf, [Reg(ra), Reg(rb), Imm(im)]),
 }
 
 enc_op_to_fun = {}
@@ -182,6 +206,15 @@ op_bits = {
     'ZES':[0b101000001001, 0b00000], 
     'ZEW':[0b101000001010,0b00000],
 }
+
+'''
+bigint_endian_inverse = lambda x: int(bin(x)[2:][::-1], 2) #wrong (leading zeros)
+bitop_le = {op: tuple(map(bigint_endian_inverse, bits)) for op, bits in op_bits.items()}
+inv_bitop_le = {}
+for k, v in bitop_le.items():
+    inv_bitop_le[v] = inv_bitop_le.get(v, [])
+    inv_bitop_le[v].append(k)
+'''
 
 op_fields = {op: enc_fun_to_fields[enc_op_to_fun[op]] for op in op_bits}
 
