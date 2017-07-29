@@ -91,6 +91,7 @@ op_bits = {
     'LDSD':[0b1010100,0b000], 
     'LDT':[0b1010110,0b000],
     'LDTI':[0b1010110,0b000],
+    'LDTD':[0b1010110,0b000],
     'LDW':[0b1010101,0b000], 
     'LDWI':[0b1010101,0b000], 
     'LDWD':[0b1010101,0b000], 
@@ -181,6 +182,8 @@ op_bits = {
     'ZES':[0b101000001001, 0b00000], 
     'ZEW':[0b101000001010,0b00000],
 }
+
+op_fields = {op: enc_fun_to_fields[enc_op_to_fun[op]] for op in op_bits}
 
 bits_to_op = defaultdict(dict)
 for op, bits in op_bits.items():

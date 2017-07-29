@@ -37,7 +37,7 @@ CMI, CMIM
 rA, Imm alternate [0-4 Opcode][5-9 rA][10-26 Imm]
 MH, ML, MS
 
-Condition rA [0-5 Opcode][14-17 Opcode2][6-9 Condition][10-14 rA]
+Condition rA [0-5 Opcode][15-17 Opcode2][6-9 Condition][10-14 rA]
 BR, CR
 
 rA no flag [0-11 Opcode][17 Opcode2][12-16 rA]
