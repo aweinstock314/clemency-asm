@@ -1,13 +1,13 @@
 #!/usr/bin/env python2
-from maps import *
-from ins_class import *
 from bitarray import *
+from bits import *
+from ins_class import *
+from maps import *
 import re
 import sys
 import struct
 
 def encode(opcode, args):
-    from disassembler import bits2num
     tmp = (map(bits2num, op_bits[opcode]) + args)
     #print opcode, args, tmp
     (val, size) = enc_op_to_fun[opcode](*tmp)
@@ -103,16 +103,9 @@ def assemble(ast, labels):
             nyte = nyte & ((1<<9)-1)
             nytes.append(nyte)
         nytes.reverse()
-        swapendian(nytes)
+        nytes = swapendian(nytes)
         outputs.append(nytes)
     return outputs
-
-def swapendian(nytes):
-    'swap endian (2, 1, 3, 2, 1, 3)'
-    if len(nytes) >= 2:
-        nytes[0], nytes[1] = nytes[1], nytes[0]
-    if len(nytes) >= 5:
-        nytes[3], nytes[4] = nytes[4], nytes[3]
 
 def nytes_to_bytes(ins_list):
     ba_full = bitarray()

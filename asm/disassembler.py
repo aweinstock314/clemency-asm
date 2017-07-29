@@ -1,22 +1,24 @@
+from assembler import *
+from bits import *
+from gen.parse_ini import CONSTS
 from ins_class import *
 from maps import *
 from packers import *
-from assembler import *
-from gen.parse_ini import CONSTS
 import math
-import struct
 import sys
 import pdb
 
-def disassemble(bytes):
+def disassemble_bytes(bytes):
     nytes = bits2nytes(bytes2bits(bytes))
+    return disassemble_nytes(nytes)
+
+def disassemble_nytes(nytes):
     output = []
-    while len(nytes) > 0:
+    while len(nytes) > 1:
         try:
             (op, (data, size)) = try_parse(nytes)
             #print "Got %r" % op
-            tmp = list(nytes[:size])
-            swapendian(tmp)
+            tmp = swapendian(list(nytes[:size]))
             #print "# %r, %r, %r" % (op, nytes2bits(tmp), data)
             tmp = enc_fun_to_decprime[enc_op_to_fun[op]](op, data)
             output.append(tmp)
@@ -37,8 +39,7 @@ def try_parse(nytes):
             l = min(len(a), len(b))
             return a[-l:] == b[-l:]
         size = enc_fun_to_size[enc]
-        nytescopy = list(nytes[:size])
-        swapendian(nytescopy)
+        nytescopy = swapendian(list(nytes[:size]))
         #print("  try_parse: %r" % nytes2bits(nytescopy))
         #print nytescopy
         #print nytes2bits(nytescopy)
@@ -75,81 +76,26 @@ def try_parse(nytes):
         candidates = candidates.union(intersection)
     #print candidates
     if len(candidates) == 1:
-        nytescopy = list(nytes[:the_size])
-        swapendian(nytescopy)
+        nytescopy = swapendian(list(nytes[:the_size]))
         op = list(candidates)[0]
         #print "; %r" % nytes2bits(nytescopy)
         return (op, dec_op_to_fun[op](nytes2num(nytescopy)))
     else:
         raise Exception("Non-unique or empty decode: %r" % (candidates,))
 
-
-def bytes2bits(bytes):
-    output = []
-    for byte in bytes:
-        b = struct.unpack("B", byte)[0]
-        for i in range(8):
-            output.append((b >> (7-i)) & 1)
-    return output
-
-def bits2nytes(bits):
-    ret = []
-    l = len(bits)
-    l -= l % 9
-    for i in range(0, l, 9):
-        tmp = 0
-        for j in range(9):
-            tmp += bits[i+j] << (8-j)
-        ret.append(tmp)
-    return ret
-
-def bits2num(bits):
-    ret = 0
-    for (i, b) in enumerate(bits[::-1]):
-        ret += b << i
-    return ret
-
-def num2bits(num):
-    output = []
-    while num > 0:
-        output.append(num & 1)
-        num >>= 1
-    output += [0]*(9-(len(output) % 9))
-    return output[::-1]
-
-def nytes2bits(nytes):
-    output = []
-    for nyte in nytes:
-        for i in range(9):
-            output.append((nyte >> (8-i)) & 1)
-    return output
-
-for i in range(0,2**10):
-    '''
-    print 'i', i
-    print 'bits', num2bits(i)
-    print 'nytes', bits2nytes(num2bits(i))
-    print 'bits', nytes2bits(bits2nytes(num2bits(i)))
-    print 'converted i', bits2num(nytes2bits(bits2nytes(num2bits(i))))
-    '''
-    assert bits2num(num2bits(i)) == i
-    assert bits2num(nytes2bits(bits2nytes(num2bits(i)))) == i
-    #assert bits2num(bytes2bits(bits2bytes(num2bits(i)))) == i
-
-def nytes2num(nytes):
-    return bits2num(nytes2bits(nytes))
-
+'''
 def leftpad(bits, size):
     remainder = size - len(bits)
     if remainder >= 0:
         return ([0] * remainder) + bits
     else:
         return bits
+'''
 
 if __name__ == '__main__':
     if len(sys.argv) == 2:
         data = open(sys.argv[1], 'r').read()
         #print bytes2bits(data)
-        tmp = disassemble(data)
+        tmp = disassemble_bytes(data)
         for thing in tmp:
             print thing

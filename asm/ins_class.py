@@ -1,3 +1,4 @@
+from bits import *
 import itertools
 
 reg_list = ["r%02i"%(i) for i in range(29)] + ["st","ra","pc"] #,"fl"]
@@ -100,9 +101,8 @@ class RawNytes:
     def __init__(self, nytes):
        self.nytes = nytes
     def emit(self, data, i):
-        import disassembler
         #print self.nytes
-        return (disassembler.nytes2num(self.nytes), len(self.nytes))
+        return (nytes2num(self.nytes), len(self.nytes))
 
 class Label:
     def __init__(self, name):
@@ -147,7 +147,8 @@ class MemoryFlags:
                 3: 'MemoryFlags(r-x)',
                 }[self.value]
     def __str__(self):
-        return str(self.value)
+        from assembler import MP_MODES
+        return MP_MODES[self.value]
     def untyped_repr(self, _):
         return [self.value]
 
