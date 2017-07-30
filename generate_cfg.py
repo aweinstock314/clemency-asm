@@ -1,6 +1,6 @@
 from pprint import *
 from subprocess import *
-#import graphviz as gv
+import graphviz as gv
 
 def hlt(mnem): return instr_eq(mnem, "ht")
 def ret(mnem): return instr_eq(mnem, "re")
@@ -125,7 +125,7 @@ if __name__ == '__main__':
 
     import sys
     fname = 'hello.bin'
-    if len(sys.argv) == 2:
+    if len(sys.argv) >= 2:
         fname = sys.argv[1]
     disass, instr_eq = make_disassembler(fname)
 

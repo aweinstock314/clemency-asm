@@ -1,4 +1,4 @@
-# asm
+# clemency-asm
 Python cLEMENCy asm lib
 
 ## Using the assembler
@@ -73,6 +73,13 @@ Connected IP: 0.0.0.0
 CPU no longer running
 Total instructions: 11, 0.0000m instructions/sec
 Running time: 19.906709 seconds, sleep time: 0.000000 seconds
+```
+
+## Generating control flow graphs/full disassembly
+
+```
+$ python generate_cfg.py challenges/16_rubix.bin > rubix_disassembly.txt
+$ python generate_cfg.py challenges/16_quarter.bin --graphviz | xdot -
 ```
 
 ## Stability/correctness tests
