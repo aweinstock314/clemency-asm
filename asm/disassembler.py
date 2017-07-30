@@ -102,4 +102,4 @@ if __name__ == '__main__':
         #print bytes2bits(data)
         tmp = disassemble_bytes(data)
         for thing in tmp:
-            print thing
+            print(str(thing))
