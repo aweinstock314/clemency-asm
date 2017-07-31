@@ -13,8 +13,8 @@ dt 0x68, 0x65, 0x6c
 dw 0x6c, 0x6f
 postobfuscation:
 ml r0, 0
-; The disassembler module has helper functions for packing bytes (TODO: move to better module?)
-#>>> from disassembler import *
+; The bits module has helper functions for packing bits {to,from} {8,9}-bit bytes
+#>>> from asm.bits import *
 #>>> bits2nytes(bytes2bits("hello"))
 #[208, 405, 355, 198, 480]
 ml r1, 208
