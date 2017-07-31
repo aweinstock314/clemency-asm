@@ -1,6 +1,8 @@
 # clemency-asm
 Python cLEMENCy asm lib
 
+[The official source of the emulator and manual](https://blog.legitbs.net/2017/07/the-clemency-architecture.html)
+
 ## Using the assembler
 
 ```
